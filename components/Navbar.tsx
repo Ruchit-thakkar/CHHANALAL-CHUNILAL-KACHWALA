@@ -39,7 +39,7 @@ export default function Navbar({
     { label: "Services", href: "#services" },
     { label: "Our Work", href: "#work" },
     { label: "About", href: "#about" },
-    { label: "Contact", href: "#contact" },
+    { label: "Let's Talk", href: "#contact" },
   ];
 
   return (

@@ -1,102 +1,92 @@
-# Walkthrough: Chhanalal Chunilal Kachwala Landing Page
+# Walkthrough: Online Inquiry & Admin Dashboard System (MongoDB)
 
-A modern, architectural, premium landing page website created for **Chhanalal Chunilal Kachwala** (Glass Merchant, Aluminium Fabrication & Mirror Studio).
-
-## Highlights & Design System
-
-The website adheres strictly to the requested editorial architectural aesthetic:
-- **Palette**:
-  - Warm Ivory: `#F5F2EC` (primary background)
-  - Deep Charcoal: `#171717` (primary headings & text)
-  - Dark Contrast Sections: `#111111` (Why Choose Us, Footer, Hero)
-  - Secondary Text: `#66635E`
-  - Border Accents: `#D9D4CB`
-  - Muted Champagne Accent: `#B99A63` (used thoughtfully for badges, dividers, icons, active states)
-- **Typography**:
-  - Headings: `DM Sans` (bold, architectural letter spacing)
-  - Body: `Inter` (crisp, readable line heights)
-- **Architecture**: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS, Lucide React icons.
+Added an end-to-end **Online Inquiry Management and CRM Admin Dashboard** to the Chhanalal Chunilal Kachwala (CCK) Next.js platform.
 
 ---
 
-## Key Sections & Features Implemented
+## What Was Added
 
-### 1. Sticky Editorial Navbar
-- **Dynamic Scroll Effect**: Starts transparent over the hero and smoothly transitions into a frosted warm ivory backdrop blur (`#F5F2EC`/90) with subtle border on scroll.
-- **Brand Identity**: Left-aligned business name and uppercase subtitle.
-- **Desktop Navigation**: Anchor links with animated underline micro-interactions + "Get a Quote" button.
-- **Mobile Drawer**: Responsive full-screen slide-down drawer with Call and WhatsApp quick triggers.
+### 1. Database & Models (MongoDB + Mongoose)
+- [lib/mongodb.ts](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/lib/mongodb.ts): Global singleton cached Mongoose connection suitable for Next.js development and production.
+- [lib/models/Inquiry.ts](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/lib/models/Inquiry.ts): Inquiry Schema with:
+  - Unique readable sequential IDs (`CCK-0001`, `CCK-0002`...)
+  - `name`, `phone`, `service`, `projectDetails`, `preferredContact` ("Phone Call" | "WhatsApp")
+  - `status`: enum (`not_contacted`, `contacted`, `follow_up`, `completed`, `cancelled`) with default `not_contacted`
+  - `adminNotes`: private internal notes
+  - `contactedAt`, `createdAt`, `updatedAt` timestamps
 
-### 2. Full-Height Dramatic Hero (90–96vh)
-- High-resolution architectural photography with multi-layer readability gradients.
-- Gold uppercase badge: `GLASS • ALUMINIUM • MIRROR`.
-- Architectural headline: *"Crafting Modern Spaces With Glass, Aluminium & Mirror."*
-- Primary CTAs: **Get a Quote →** and **Explore Our Work**.
-- Bottom trust bar: Custom Fabrication, Professional Installation, and Quality Materials.
+### 2. Secure Server-Side Authentication
+- [.env.local](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/.env.local):
+  - `ADMIN_ID=cck`
+  - `ADMIN_PASSWORD=cck123`
+  - `ADMIN_SESSION_SECRET`
+  - `MONGODB_URI`
+- [lib/auth.ts](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/lib/auth.ts):
+  - HMAC-SHA256 session token generation and verification.
+  - Stored in secure `httpOnly` cookie (`cck_admin_session`, `SameSite=lax`, 7-day expiration).
+  - Server-side route handler and page verification preventing unauthorized access.
 
-### 3. Trust & Assurance Strip
-- 4 core pillars: **Precision**, **Quality**, **Experience**, and **Service** separated by thin vertical dividers on desktop.
+### 3. Backend API Route Handlers
+- [app/api/inquiries/route.ts](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/app/api/inquiries/route.ts):
+  - `POST` (Public): Validates client inputs, saves inquiry to MongoDB, returns generated ID.
+  - `GET` (Admin only): Search by name/phone/ID, status filter, sorting, and pagination.
+- [app/api/inquiries/[id]/route.ts](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/app/api/inquiries/%5Bid%5D/route.ts):
+  - `GET`, `PATCH` (status changer, sets `contactedAt` automatically, saves private notes), `DELETE`.
+- [app/api/admin/login/route.ts](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/app/api/admin/login/route.ts): Authenticates credentials and sets HTTP-only cookie.
+- [app/api/admin/logout/route.ts](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/app/api/admin/logout/route.ts): Clears session cookie.
+- [app/api/admin/stats/route.ts](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/app/api/admin/stats/route.ts): Real-time MongoDB counts for Total, Not Contacted, Contacted, Follow Up, Completed, Cancelled.
 
-### 4. Complete Services Section (6 Premium Cards)
-- Section header: *"What We Do - Complete Glass, Aluminium & Mirror Solutions."*
-- 6 interactive service cards:
-  1. **Glass Merchant** (Toughened, Laminated, Tinted & Low-Iron Glass)
-  2. **Aluminium Fabrication** (Doors, Windows, Sliding & Casement)
-  3. **Profile Work** (Slimline profiles, modular kitchen shutters, partitions)
-  4. **Glass Railing** (Balcony base channels, spigot fittings, toughened railings)
-  5. **LED Mirrors** (Backlit vanity mirrors, defogger pads, touch dimmers)
-  6. **Custom Mirror Designs** (Organic shapes, beveled edges, antique tint)
-- Micro-interactions: Cards lift by `4px` with subtle shadow and champagne border transition on hover.
+### 4. Public Website Updates
+- [components/Navbar.tsx](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/components/Navbar.tsx):
+  - Navigation item updated from "Contact" to **"Let's Talk"**, smoothly scrolling to `#contact`.
+- [components/Contact.tsx](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/components/Contact.tsx):
+  - Prominent headings: **Online Inquiry** / **Tell Us About Your Project**.
+  - Supporting text: *"Have a glass, aluminium or mirror project in mind? Tell us what you need and our team will get in touch with you."*
+  - Form Fields: Full Name, Phone Number, Service Required (dropdown), Project Details (textarea), Preferred Contact Method (Phone Call / WhatsApp).
+  - Client-side validation, direct API submission to MongoDB.
+  - Confirmation alert: *"Thank you for contacting Chhanalal Chunilal Kachwala. We've received your project details and will get in touch with you soon."*
+  - Form auto-clears on success.
+- [components/Footer.tsx](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/components/Footer.tsx):
+  - Added subtle **Admin Login** link in the bottom row pointing to `/admin`.
 
-### 5. Selected Work (Editorial Asymmetric Masonry Gallery)
-- Categorized architectural portfolio with filter pills (*All Works*, *Glass Railing*, *Aluminium*, *Designer Mirrors*, *Custom Glass*).
-- Asymmetric grid with varying aspect ratios (`col-span-7`, `col-span-5`, etc.) mimicking architectural monographs.
-- Hover states with smooth image zoom, dark scrim, and interactive detail view modal.
-
-### 6. About & Craftsmanship Section
-- Two-column magazine layout pairing workshop fabrication photography with an authentic brand narrative.
-- 3 factual capability indicators:
-  - **01** Glass & Mirror (Supply & Processing)
-  - **02** Aluminium (Profile Fabrication)
-  - **03** Custom Design (End-to-End Execution)
-- Strict adherence to prompt rules: zero fake years of experience, fake customer metrics, or artificial awards.
-
-### 7. Why Clients Choose Us (Dark Charcoal Aesthetic `#111111`)
-- Deep contrast section with 4 feature cards:
-  - Quality Materials
-  - Custom Solutions
-  - Precise Fabrication
-  - Professional Installation
-- Minimal line iconography with champagne accents.
-
-### 8. 4-Step Process Section
-- Visual roadmap: **01 CONSULT** → **02 DESIGN** → **03 FABRICATE** → **04 INSTALL** connected by a thin horizontal alignment guide.
-
-### 9. Striking Architectural CTA
-- Full-width glass architecture background with direct action buttons: **Request a Quote** and **WhatsApp Us**.
-
-### 10. Studio Contact & Accessible Enquiry Form
-- **Left Column**: Direct phone link (`+91 98765 43210`), WhatsApp click-to-chat, studio address, and operating hours.
-- **Right Column**: Interactive enquiry form with client-side validation for name, phone number, service selection, and project requirements.
-- **Instant WhatsApp Generation**: Allows user to immediately export their form data directly into an organized WhatsApp message for quick quotation.
-
-### 11. Interactive Quote & Project Lightbox Modals
-- Global **QuoteModal**: Lets visitors select service type, residential vs. commercial scope, and dimensions.
-- Global **ProjectModal**: Displays high-resolution photography, technical specs, and request similar quote action.
-- Floating quick-contact widget for fast mobile/desktop reachability.
-
-### 12. SEO & Schema.org LocalBusiness
-- OpenGraph metadata, descriptive title, keywords, and `HomeAndConstructionBusiness` JSON-LD structured data.
+### 5. Admin Dashboard CRM
+- [app/admin/page.tsx](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/app/admin/page.tsx):
+  - Dedicated login screen with CCK editorial aesthetic.
+- [app/admin/dashboard/layout.tsx](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/app/admin/dashboard/layout.tsx):
+  - Protected layout with server-side authentication redirect.
+- [components/admin/AdminSidebar.tsx](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/components/admin/AdminSidebar.tsx):
+  - Studio brand heading, Dashboard, Online Inquiries with **live uncontacted badge count**, and secure logout.
+- [app/admin/dashboard/page.tsx](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/app/admin/dashboard/page.tsx):
+  - 5 live KPI metric cards (Total, Not Contacted, Contacted, Follow Up, Completed).
+  - Recent Inquiries table sorted newest first with direct inspection.
+- [app/admin/dashboard/inquiries/page.tsx](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/app/admin/dashboard/inquiries/page.tsx):
+  - Live search by Name, Phone, or Inquiry ID.
+  - Status filters (All, Not Contacted, Contacted, Follow Up, Completed, Cancelled).
+  - Sort by newest or oldest.
+- [components/admin/InquiryDetailModal.tsx](file:///c:/Users/RUCHIT/OneDrive/Desktop/projects/Chhanalal%20Chunilal%20Kachwala/components/admin/InquiryDetailModal.tsx):
+  - Full inquiry inspector side drawer.
+  - Direct 1-tap **Call** (`tel:`), **WhatsApp**, and **Copy Number** buttons.
+  - Interactive status changer (automatically records `contactedAt` upon marking Contacted).
+  - Private **Admin Notes** textarea persisted in MongoDB (never exposed to customers).
 
 ---
 
 ## Verification Results
 
-### Production Build
+### Build Compilation
 ```bash
 npm run build
 ```
-- **Result**: Success (`Exit Code 0`)
-- **Turbopack Compilation**: 3.3s
-- **TypeScript Typecheck**: 0 errors
-- **Static Page Generation**: `app/page.tsx` and `app/layout.tsx` pre-rendered cleanly without hydration or missing import issues.
+- **Result**: `Exit code 0`
+- **TypeScript**: 0 errors
+- **Routes Generated**:
+  - `○ /` (Public landing page)
+  - `○ /admin` (Admin login)
+  - `ƒ /admin/dashboard` (Protected dashboard)
+  - `ƒ /admin/dashboard/inquiries` (Protected CRM)
+  - `ƒ /api/admin/login`
+  - `ƒ /api/admin/logout`
+  - `ƒ /api/admin/stats`
+  - `ƒ /api/admin/check`
+  - `ƒ /api/inquiries`
+  - `ƒ /api/inquiries/[id]`

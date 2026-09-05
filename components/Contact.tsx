@@ -1,75 +1,98 @@
 "use client";
 
 import React, { useState } from "react";
-import { Phone, MessageSquare, MapPin, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
+import { Phone, MessageSquare, MapPin, ArrowRight, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     service: "Glass Railing",
-    details: "",
-    message: "",
+    projectDetails: "",
+    preferredContact: "Phone Call",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const servicesList = [
-    "Glass Railing",
-    "Aluminium Fabrication & Windows",
+    "Glass Merchant",
+    "Aluminium Fabrication",
     "Aluminium Profile Work",
-    "LED Mirrors",
-    "Custom Mirror Designs",
-    "Glass Merchant & Toughened Glass",
-    "Other Custom Architectural Work",
+    "Glass Railing",
+    "LED Mirror",
+    "Mirror Design Work",
+    "Custom Glass Work",
+    "Other",
   ];
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = "Please provide your name.";
+      newErrors.name = "Please provide your full name.";
     }
 
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required.";
-    } else if (!/^[0-9+ -]{7,15}$/.test(formData.phone.trim())) {
+    } else if (!/^[0-9+\s\-()]{7,16}$/.test(formData.phone.trim())) {
       newErrors.phone = "Please enter a valid phone number.";
     }
 
-    if (!formData.message.trim()) {
-      newErrors.message = "Please describe your project or requirement.";
+    if (!formData.service) {
+      newErrors.service = "Please select a service required.";
+    }
+
+    if (!formData.projectDetails.trim()) {
+      newErrors.projectDetails = "Please enter your project details and requirements.";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setApiError(null);
+
     if (!validate()) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+
+    try {
+      const res = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to submit inquiry. Please try again.");
+      }
+
+      // Success
       setSubmitted(true);
-    }, 600);
-  };
-
-  const handleWhatsAppSend = (number: string) => {
-    if (!validate()) return;
-
-    const messageText = `*New Inquiry for Chhanalal Chunilal Kachwala*%0A%0A*Name:* ${encodeURIComponent(
-      formData.name
-    )}%0A*Phone:* ${encodeURIComponent(formData.phone)}%0A*Service:* ${encodeURIComponent(
-      formData.service
-    )}%0A*Project Scope:* ${encodeURIComponent(
-      formData.details || "Not specified"
-    )}%0A*Message:* ${encodeURIComponent(formData.message)}`;
-
-    window.open(`https://wa.me/${number}?text=${messageText}`, "_blank");
+      // Clear form after successful submission
+      setFormData({
+        name: "",
+        phone: "",
+        service: "Glass Railing",
+        projectDetails: "",
+        preferredContact: "Phone Call",
+      });
+      setErrors({});
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Submission failed";
+      setApiError(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -91,8 +114,9 @@ export default function Contact() {
               </h2>
 
               <p className="text-base sm:text-lg text-[#66635E] font-light leading-relaxed mb-10">
-                Tell us what you&apos;re looking for and we&apos;ll help you find the right solution.
-                Bring your floor plan, preliminary sizes, or design references for an accurate estimate.
+                Have a glass, aluminium or mirror project in mind? Tell us what you need
+                and our team will get in touch with you. Bring your floor plan, preliminary
+                sizes, or design references for an accurate estimate.
               </p>
 
               {/* Information Cards */}
@@ -207,58 +231,56 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Right Column: Premium Enquiry Form */}
+          {/* Right Column: Online Inquiry Form */}
           <div className="lg:col-span-7">
             <div className="bg-white border border-[#D9D4CB] p-8 sm:p-10 shadow-xs relative">
               <div className="mb-8">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#B99A63] block mb-1">
                   Online Inquiry
                 </span>
-                <h3 className="font-heading text-2xl font-bold text-[#171717]">
+                <h3 className="font-heading text-2xl sm:text-3xl font-bold text-[#171717]">
                   Tell Us About Your Project
                 </h3>
-                <p className="text-xs sm:text-sm text-[#66635E] font-light mt-1">
-                  No login required. We respect your privacy and respond promptly.
+                <p className="text-xs sm:text-sm text-[#66635E] font-light mt-2 leading-relaxed">
+                  Have a glass, aluminium or mirror project in mind? Tell us what you need
+                  and our team will get in touch with you.
                 </p>
               </div>
 
               {submitted ? (
-                <div className="py-12 px-6 text-center bg-[#F5F2EC] border border-[#D9D4CB]">
-                  <CheckCircle2 className="w-12 h-12 text-[#9A7D4A] mx-auto mb-4" />
+                <div className="py-12 px-6 text-center bg-[#FAF8F5] border border-[#D9D4CB] animate-fadeIn">
+                  <CheckCircle2 className="w-14 h-14 text-[#9A7D4A] mx-auto mb-4" />
                   <h4 className="font-heading text-2xl font-bold text-[#171717] mb-2">
-                    Enquiry Received
+                    Inquiry Received
                   </h4>
-                  <p className="text-sm text-[#66635E] font-light max-w-md mx-auto mb-6 leading-relaxed">
-                    Thank you, <strong className="text-[#171717]">{formData.name}</strong>. Our fabrication
-                    specialist will review your requirements for <strong>{formData.service}</strong> and contact
-                    you at <strong className="text-[#171717]">{formData.phone}</strong> shortly.
+                  <p className="text-sm text-[#66635E] font-light max-w-md mx-auto mb-8 leading-relaxed">
+                    Thank you for contacting <strong>Chhanalal Chunilal Kachwala</strong>.
+                    We&apos;ve received your project details and will get in touch with you soon.
                   </p>
                   <button
-                    onClick={() => {
-                      setSubmitted(false);
-                      setFormData({
-                        name: "",
-                        phone: "",
-                        service: "Glass Railing",
-                        details: "",
-                        message: "",
-                      });
-                    }}
-                    className="text-xs uppercase tracking-wider font-semibold underline text-[#171717] hover:text-[#9A7D4A]"
+                    onClick={() => setSubmitted(false)}
+                    className="text-xs uppercase tracking-wider font-semibold underline text-[#171717] hover:text-[#9A7D4A] transition-colors"
                   >
                     Submit Another Inquiry
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate className="space-y-6">
-                  {/* Name & Phone */}
+                  {apiError && (
+                    <div className="p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs flex items-center space-x-2">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>{apiError}</span>
+                    </div>
+                  )}
+
+                  {/* Full Name & Phone Number */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                       <label
                         htmlFor="name"
                         className="block text-xs uppercase tracking-wider font-semibold text-[#171717] mb-2"
                       >
-                        Your Name *
+                        Full Name *
                       </label>
                       <input
                         id="name"
@@ -268,7 +290,7 @@ export default function Contact() {
                           setFormData({ ...formData, name: e.target.value });
                           if (errors.name) setErrors({ ...errors, name: "" });
                         }}
-                        placeholder="e.g. Ramesh Patel"
+                        placeholder="e.g. Rahul Patel"
                         className={`w-full px-4 py-3 bg-[#F5F2EC]/60 border text-sm text-[#171717] placeholder-[#66635E]/60 focus:outline-none focus:border-[#171717] focus:bg-white transition-colors ${
                           errors.name ? "border-red-500" : "border-[#D9D4CB]"
                         }`}
@@ -296,7 +318,7 @@ export default function Contact() {
                           setFormData({ ...formData, phone: e.target.value });
                           if (errors.phone) setErrors({ ...errors, phone: "" });
                         }}
-                        placeholder="e.g. +91 98250 12345"
+                        placeholder="e.g. 9876543210"
                         className={`w-full px-4 py-3 bg-[#F5F2EC]/60 border text-sm text-[#171717] placeholder-[#66635E]/60 focus:outline-none focus:border-[#171717] focus:bg-white transition-colors ${
                           errors.phone ? "border-red-500" : "border-[#D9D4CB]"
                         }`}
@@ -321,7 +343,10 @@ export default function Contact() {
                     <select
                       id="service"
                       value={formData.service}
-                      onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, service: e.target.value });
+                        if (errors.service) setErrors({ ...errors, service: "" });
+                      }}
                       className="w-full px-4 py-3 bg-[#F5F2EC]/60 border border-[#D9D4CB] text-sm text-[#171717] focus:outline-none focus:border-[#171717] focus:bg-white transition-colors cursor-pointer"
                     >
                       {servicesList.map((svc) => (
@@ -330,82 +355,84 @@ export default function Contact() {
                         </option>
                       ))}
                     </select>
+                    {errors.service && (
+                      <p className="flex items-center text-xs text-red-600 mt-1.5 font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 mr-1 shrink-0" />
+                        {errors.service}
+                      </p>
+                    )}
                   </div>
 
                   {/* Project Details */}
                   <div>
                     <label
-                      htmlFor="details"
+                      htmlFor="projectDetails"
                       className="block text-xs uppercase tracking-wider font-semibold text-[#171717] mb-2"
                     >
-                      Project Details / Approximate Dimensions (Optional)
-                    </label>
-                    <input
-                      id="details"
-                      type="text"
-                      value={formData.details}
-                      onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-                      placeholder="e.g. Balcony glass railing (approx. 40 running feet) or 3x6 ft LED mirror"
-                      className="w-full px-4 py-3 bg-[#F5F2EC]/60 border border-[#D9D4CB] text-sm text-[#171717] placeholder-[#66635E]/60 focus:outline-none focus:border-[#171717] focus:bg-white transition-colors"
-                    />
-                  </div>
-
-                  {/* Message */}
-                  <div>
-                    <label
-                      htmlFor="message"
-                      className="block text-xs uppercase tracking-wider font-semibold text-[#171717] mb-2"
-                    >
-                      Message / Specific Requirements *
+                      Project Details *
                     </label>
                     <textarea
-                      id="message"
+                      id="projectDetails"
                       rows={4}
-                      value={formData.message}
+                      value={formData.projectDetails}
                       onChange={(e) => {
-                        setFormData({ ...formData, message: e.target.value });
-                        if (errors.message) setErrors({ ...errors, message: "" });
+                        setFormData({ ...formData, projectDetails: e.target.value });
+                        if (errors.projectDetails) setErrors({ ...errors, projectDetails: "" });
                       }}
-                      placeholder="Share details regarding your timeline, design preferences, site location or questions..."
+                      placeholder="Tell us about your project, requirements, approximate dimensions, design preferences, etc."
                       className={`w-full px-4 py-3 bg-[#F5F2EC]/60 border text-sm text-[#171717] placeholder-[#66635E]/60 focus:outline-none focus:border-[#171717] focus:bg-white transition-colors ${
-                        errors.message ? "border-red-500" : "border-[#D9D4CB]"
+                        errors.projectDetails ? "border-red-500" : "border-[#D9D4CB]"
                       }`}
                     />
-                    {errors.message && (
+                    {errors.projectDetails && (
                       <p className="flex items-center text-xs text-red-600 mt-1.5 font-medium">
                         <AlertCircle className="w-3.5 h-3.5 mr-1 shrink-0" />
-                        {errors.message}
+                        {errors.projectDetails}
                       </p>
                     )}
                   </div>
 
-                  {/* CTA Actions */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                  {/* Preferred Contact Method */}
+                  <div>
+                    <label className="block text-xs uppercase tracking-wider font-semibold text-[#171717] mb-2.5">
+                      Preferred Contact Method
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {["Phone Call", "WhatsApp"].map((method) => (
+                        <button
+                          type="button"
+                          key={method}
+                          onClick={() => setFormData({ ...formData, preferredContact: method })}
+                          className={`p-3 text-xs uppercase tracking-wider font-semibold border text-center transition-all ${
+                            formData.preferredContact === method
+                              ? "border-[#171717] bg-[#171717] text-white"
+                              : "border-[#D9D4CB] bg-[#F5F2EC]/40 text-[#66635E] hover:border-[#171717]"
+                          }`}
+                        >
+                          {method === "WhatsApp" ? "WhatsApp" : "Phone Call"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Submit Action */}
+                  <div className="pt-2">
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="flex-1 group inline-flex items-center justify-center bg-[#171717] text-white px-7 py-4 text-xs font-bold uppercase tracking-wider hover:bg-[#B99A63] transition-all duration-300 disabled:opacity-50"
+                      className="w-full group inline-flex items-center justify-center bg-[#171717] text-white px-8 py-4 text-xs font-bold uppercase tracking-wider hover:bg-[#B99A63] transition-all duration-300 disabled:opacity-50"
                     >
-                      <span>{isSubmitting ? "Submitting..." : "Send Enquiry"}</span>
-                      <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleWhatsAppSend("919227626898")}
-                      className="inline-flex items-center justify-center border border-[#25D366] bg-[#25D366]/10 text-[#075E54] px-4 py-4 text-xs font-semibold uppercase tracking-wider hover:bg-[#25D366] hover:text-white transition-all duration-300"
-                    >
-                      <MessageSquare className="w-4 h-4 mr-1.5" />
-                      <span>WA Girish bhai</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleWhatsAppSend("919724316898")}
-                      className="inline-flex items-center justify-center border border-[#25D366] bg-[#25D366]/10 text-[#075E54] px-4 py-4 text-xs font-semibold uppercase tracking-wider hover:bg-[#25D366] hover:text-white transition-all duration-300"
-                    >
-                      <MessageSquare className="w-4 h-4 mr-1.5" />
-                      <span>WA Dhaval bhai</span>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          <span>Sending Inquiry...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Send Inquiry</span>
+                          <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>
