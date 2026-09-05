@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Phone, MessageSquare, MapPin, Clock, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
+import { Phone, MessageSquare, MapPin, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -52,14 +52,13 @@ export default function Contact() {
     if (!validate()) return;
 
     setIsSubmitting(true);
-    // Simulate brief network submission
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitted(true);
     }, 600);
   };
 
-  const handleWhatsAppSend = () => {
+  const handleWhatsAppSend = (number: string) => {
     if (!validate()) return;
 
     const messageText = `*New Inquiry for Chhanalal Chunilal Kachwala*%0A%0A*Name:* ${encodeURIComponent(
@@ -70,7 +69,7 @@ export default function Contact() {
       formData.details || "Not specified"
     )}%0A*Message:* ${encodeURIComponent(formData.message)}`;
 
-    window.open(`https://wa.me/919876543210?text=${messageText}`, "_blank");
+    window.open(`https://wa.me/${number}?text=${messageText}`, "_blank");
   };
 
   return (
@@ -98,83 +97,104 @@ export default function Contact() {
 
               {/* Information Cards */}
               <div className="space-y-6">
-                {/* Phone */}
+                {/* Direct Call Options */}
                 <div className="flex items-start space-x-4 p-4 bg-white border border-[#D9D4CB]">
                   <div className="p-2.5 bg-[#F5F2EC] text-[#9A7D4A] shrink-0">
                     <Phone className="w-5 h-5" />
                   </div>
-                  <div>
-                    <span className="text-xs uppercase tracking-wider font-semibold text-[#66635E] block mb-0.5">
-                      Phone
+                  <div className="w-full">
+                    <span className="text-xs uppercase tracking-wider font-semibold text-[#66635E] block mb-2">
+                      Direct Call (Choose Person)
                     </span>
-                    <a
-                      href="tel:+919876543210"
-                      className="font-heading text-base font-bold text-[#171717] hover:text-[#9A7D4A] transition-colors"
-                    >
-                      +91 98765 43210
-                    </a>
-                    <span className="text-xs text-[#66635E] block font-light mt-0.5">
-                      Direct line for site visits &amp; workshop inquiries
-                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <a
+                        href="tel:+919227626898"
+                        className="p-2.5 bg-[#F5F2EC] hover:bg-[#B99A63]/20 border border-[#D9D4CB] transition-colors block"
+                      >
+                        <span className="text-[11px] text-[#9A7D4A] font-semibold block uppercase tracking-wider">
+                          Girish bhai
+                        </span>
+                        <span className="font-heading text-sm font-bold text-[#171717]">
+                          +91 92276 26898
+                        </span>
+                      </a>
+
+                      <a
+                        href="tel:+919724316898"
+                        className="p-2.5 bg-[#F5F2EC] hover:bg-[#B99A63]/20 border border-[#D9D4CB] transition-colors block"
+                      >
+                        <span className="text-[11px] text-[#9A7D4A] font-semibold block uppercase tracking-wider">
+                          Dhaval bhai
+                        </span>
+                        <span className="font-heading text-sm font-bold text-[#171717]">
+                          +91 97243 16898
+                        </span>
+                      </a>
+                    </div>
                   </div>
                 </div>
 
-                {/* WhatsApp */}
+                {/* WhatsApp Chat Options */}
                 <div className="flex items-start space-x-4 p-4 bg-white border border-[#D9D4CB]">
-                  <div className="p-2.5 bg-[#F5F2EC] text-[#9A7D4A] shrink-0">
+                  <div className="p-2.5 bg-[#F5F2EC] text-[#25D366] shrink-0">
                     <MessageSquare className="w-5 h-5" />
                   </div>
-                  <div>
-                    <span className="text-xs uppercase tracking-wider font-semibold text-[#66635E] block mb-0.5">
-                      WhatsApp
+                  <div className="w-full">
+                    <span className="text-xs uppercase tracking-wider font-semibold text-[#66635E] block mb-2">
+                      WhatsApp Chat &amp; Drawing Estimates
                     </span>
-                    <a
-                      href="https://wa.me/919876543210?text=Hello%20Chhanalal%20Chunilal%20Kachwala,%20I%20would%20like%20to%20send%20my%20glass%20project%20drawings."
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-heading text-base font-bold text-[#171717] hover:text-[#9A7D4A] transition-colors"
-                    >
-                      +91 98765 43210
-                    </a>
-                    <span className="text-xs text-[#66635E] block font-light mt-0.5">
-                      Quick drawing &amp; photo estimates
-                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <a
+                        href="https://wa.me/919227626898?text=Hello%20Girish%20bhai,%20I%20would%20like%20to%20inquire%20about%20your%20glass%20and%20aluminium%20services."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2.5 bg-[#F5F2EC] hover:bg-[#25D366]/10 border border-[#D9D4CB] hover:border-[#25D366] transition-colors block"
+                      >
+                        <span className="text-[11px] text-[#25D366] font-semibold block uppercase tracking-wider">
+                          Girish bhai
+                        </span>
+                        <span className="font-heading text-sm font-bold text-[#171717]">
+                          +91 92276 26898
+                        </span>
+                      </a>
+
+                      <a
+                        href="https://wa.me/919724316898?text=Hello%20Dhaval%20bhai,%20I%20would%20like%20to%20inquire%20about%20your%20glass%20and%20aluminium%20services."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2.5 bg-[#F5F2EC] hover:bg-[#25D366]/10 border border-[#D9D4CB] hover:border-[#25D366] transition-colors block"
+                      >
+                        <span className="text-[11px] text-[#25D366] font-semibold block uppercase tracking-wider">
+                          Dhaval bhai
+                        </span>
+                        <span className="font-heading text-sm font-bold text-[#171717]">
+                          +91 97243 16898
+                        </span>
+                      </a>
+                    </div>
                   </div>
                 </div>
 
-                {/* Location */}
+                {/* Location with Google Map Link */}
                 <div className="flex items-start space-x-4 p-4 bg-white border border-[#D9D4CB]">
                   <div className="p-2.5 bg-[#F5F2EC] text-[#9A7D4A] shrink-0">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-xs uppercase tracking-wider font-semibold text-[#66635E] block mb-0.5">
-                      Location / Studio
+                    <span className="text-xs uppercase tracking-wider font-semibold text-[#66635E] block mb-1">
+                      Studio &amp; Workshop Address
                     </span>
-                    <p className="font-heading text-base font-bold text-[#171717]">
-                      Glass &amp; Aluminium Market, Main Road
+                    <p className="font-heading text-sm sm:text-base font-bold text-[#171717] leading-relaxed mb-2">
+                      D 68, shree vivekanand industrial estate Nr sheetal cinema, Gomtipur Rd, Rakhial, Ahmedabad, Gujarat 380021
                     </p>
-                    <span className="text-xs text-[#66635E] block font-light mt-0.5">
-                      Serving Residential &amp; Commercial Projects Across the Region
-                    </span>
-                  </div>
-                </div>
-
-                {/* Business Hours */}
-                <div className="flex items-start space-x-4 p-4 bg-white border border-[#D9D4CB]">
-                  <div className="p-2.5 bg-[#F5F2EC] text-[#9A7D4A] shrink-0">
-                    <Clock className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-xs uppercase tracking-wider font-semibold text-[#66635E] block mb-0.5">
-                      Business Hours
-                    </span>
-                    <p className="font-heading text-sm font-bold text-[#171717]">
-                      Monday – Saturday: 9:30 AM – 8:00 PM
-                    </p>
-                    <span className="text-xs text-[#66635E] block font-light mt-0.5">
-                      Sunday: By Prior Appointment for On-Site Measurement
-                    </span>
+                    <a
+                      href="https://maps.app.goo.gl/3AWbjd1VD8qc4NGr8"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-xs font-bold text-[#B99A63] hover:text-[#9A7D4A] underline underline-offset-4"
+                    >
+                      View on Google Maps →
+                    </a>
                   </div>
                 </div>
               </div>
@@ -360,11 +380,11 @@ export default function Contact() {
                   </div>
 
                   {/* CTA Actions */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="flex-1 group inline-flex items-center justify-center bg-[#171717] text-white px-8 py-4 text-xs font-bold uppercase tracking-wider hover:bg-[#B99A63] transition-all duration-300 disabled:opacity-50"
+                      className="flex-1 group inline-flex items-center justify-center bg-[#171717] text-white px-7 py-4 text-xs font-bold uppercase tracking-wider hover:bg-[#B99A63] transition-all duration-300 disabled:opacity-50"
                     >
                       <span>{isSubmitting ? "Submitting..." : "Send Enquiry"}</span>
                       <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
@@ -372,11 +392,20 @@ export default function Contact() {
 
                     <button
                       type="button"
-                      onClick={handleWhatsAppSend}
-                      className="inline-flex items-center justify-center border border-[#25D366] bg-[#25D366]/10 text-[#075E54] px-6 py-4 text-xs font-semibold uppercase tracking-wider hover:bg-[#25D366] hover:text-white transition-all duration-300"
+                      onClick={() => handleWhatsAppSend("919227626898")}
+                      className="inline-flex items-center justify-center border border-[#25D366] bg-[#25D366]/10 text-[#075E54] px-4 py-4 text-xs font-semibold uppercase tracking-wider hover:bg-[#25D366] hover:text-white transition-all duration-300"
                     >
-                      <MessageSquare className="w-4 h-4 mr-2" />
-                      <span>Send on WhatsApp</span>
+                      <MessageSquare className="w-4 h-4 mr-1.5" />
+                      <span>WA Girish bhai</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleWhatsAppSend("919724316898")}
+                      className="inline-flex items-center justify-center border border-[#25D366] bg-[#25D366]/10 text-[#075E54] px-4 py-4 text-xs font-semibold uppercase tracking-wider hover:bg-[#25D366] hover:text-white transition-all duration-300"
+                    >
+                      <MessageSquare className="w-4 h-4 mr-1.5" />
+                      <span>WA Dhaval bhai</span>
                     </button>
                   </div>
                 </form>

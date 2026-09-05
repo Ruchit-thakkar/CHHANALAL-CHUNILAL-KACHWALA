@@ -6,9 +6,13 @@ import { MessageSquare, ArrowRight } from "lucide-react";
 
 interface PremiumCTAProps {
   onOpenQuoteModal: () => void;
+  onOpenWhatsAppPicker?: () => void;
 }
 
-export default function PremiumCTA({ onOpenQuoteModal }: PremiumCTAProps) {
+export default function PremiumCTA({
+  onOpenQuoteModal,
+  onOpenWhatsAppPicker,
+}: PremiumCTAProps) {
   return (
     <section className="relative py-24 sm:py-32 overflow-hidden bg-[#111111] text-white">
       {/* Background Architectural Glass Image */}
@@ -45,7 +49,7 @@ export default function PremiumCTA({ onOpenQuoteModal }: PremiumCTAProps) {
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-lg mx-auto">
           <button
             onClick={onOpenQuoteModal}
             className="w-full sm:w-auto inline-flex items-center justify-center bg-[#B99A63] text-[#171717] px-8 py-4 text-xs font-bold uppercase tracking-wider hover:bg-[#D4BD8E] transition-all duration-300 shadow-md group"
@@ -54,15 +58,26 @@ export default function PremiumCTA({ onOpenQuoteModal }: PremiumCTAProps) {
             <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
 
-          <a
-            href="https://wa.me/919876543210?text=Hello%20Chhanalal%20Chunilal%20Kachwala,%20I%20have%20an%20upcoming%20project%20and%20would%20like%20to%20consult%20on%20glass%20and%20aluminium."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto inline-flex items-center justify-center border border-white/40 bg-white/10 backdrop-blur-xs text-white px-8 py-4 text-xs font-medium uppercase tracking-wider hover:bg-white hover:text-[#171717] hover:border-white transition-all duration-300 group"
-          >
-            <MessageSquare className="w-4 h-4 mr-2 text-[#D4BD8E] group-hover:text-[#171717]" />
-            <span>WhatsApp Us</span>
-          </a>
+          {onOpenWhatsAppPicker ? (
+            <button
+              type="button"
+              onClick={onOpenWhatsAppPicker}
+              className="w-full sm:w-auto inline-flex items-center justify-center border border-white/40 bg-white/10 backdrop-blur-xs text-white px-8 py-4 text-xs font-medium uppercase tracking-wider hover:bg-white hover:text-[#171717] hover:border-white transition-all duration-300 group"
+            >
+              <MessageSquare className="w-4 h-4 mr-2 text-[#25D366]" />
+              <span>WhatsApp Us (Choose)</span>
+            </button>
+          ) : (
+            <a
+              href="https://wa.me/919227626898?text=Hello%20Chhanalal%20Chunilal%20Kachwala,%20I%20have%20an%20upcoming%20project%20and%20would%20like%20to%20consult%20on%20glass%20and%20aluminium."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center border border-white/40 bg-white/10 backdrop-blur-xs text-white px-8 py-4 text-xs font-medium uppercase tracking-wider hover:bg-white hover:text-[#171717] hover:border-white transition-all duration-300 group"
+            >
+              <MessageSquare className="w-4 h-4 mr-2 text-[#25D366]" />
+              <span>WhatsApp Us</span>
+            </a>
+          )}
         </div>
       </div>
     </section>

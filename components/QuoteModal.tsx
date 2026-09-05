@@ -137,11 +137,10 @@ export default function QuoteModal({
                       type="button"
                       key={opt}
                       onClick={() => setService(opt)}
-                      className={`p-2.5 text-left border transition-colors ${
-                        service === opt
+                      className={`p-2.5 text-left border transition-colors ${service === opt
                           ? "border-[#171717] bg-[#171717] text-white font-medium"
                           : "border-[#D9D4CB] bg-white text-[#66635E] hover:border-[#171717]"
-                      }`}
+                        }`}
                     >
                       {opt}
                     </button>
@@ -160,11 +159,10 @@ export default function QuoteModal({
                       type="button"
                       key={type}
                       onClick={() => setProjectType(type)}
-                      className={`py-2 text-center border transition-colors ${
-                        projectType === type
+                      className={`py-2 text-center border transition-colors ${projectType === type
                           ? "border-[#B99A63] bg-[#B99A63]/15 text-[#9A7D4A] font-semibold"
                           : "border-[#D9D4CB] bg-white text-[#66635E] hover:border-[#B99A63]"
-                      }`}
+                        }`}
                     >
                       {type}
                     </button>
@@ -237,14 +235,45 @@ export default function QuoteModal({
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
 
-                <button
-                  type="button"
-                  onClick={handleWhatsAppQuote}
-                  className="w-full py-3 border border-[#25D366] bg-[#25D366]/10 text-[#075E54] text-xs uppercase tracking-wider font-semibold hover:bg-[#25D366] hover:text-white transition-colors flex items-center justify-center space-x-2"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  <span>Send Spec to WhatsApp Instant</span>
-                </button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const text = `*Custom Quote Request*%0A*Business:* Chhanalal Chunilal Kachwala%0A%0A*Name:* ${encodeURIComponent(
+                        name || "Inquirer"
+                      )}%0A*Phone:* ${encodeURIComponent(phone || "Not specified")}%0A*Service:* ${encodeURIComponent(
+                        service
+                      )}%0A*Project Type:* ${encodeURIComponent(
+                        projectType
+                      )}%0A*Dimensions / Notes:* ${encodeURIComponent(notes || "Please advise on specs")}`;
+                      window.open(`https://wa.me/919227626898?text=${text}`, "_blank");
+                      onClose();
+                    }}
+                    className="py-2.5 px-3 border border-[#25D366] bg-[#25D366]/10 text-[#075E54] text-xs font-semibold hover:bg-[#25D366] hover:text-white transition-colors flex items-center justify-center space-x-1.5"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>WA Girish bhai</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const text = `*Custom Quote Request*%0A*Business:* Chhanalal Chunilal Kachwala%0A%0A*Name:* ${encodeURIComponent(
+                        name || "Inquirer"
+                      )}%0A*Phone:* ${encodeURIComponent(phone || "Not specified")}%0A*Service:* ${encodeURIComponent(
+                        service
+                      )}%0A*Project Type:* ${encodeURIComponent(
+                        projectType
+                      )}%0A*Dimensions / Notes:* ${encodeURIComponent(notes || "Please advise on specs")}`;
+                      window.open(`https://wa.me/919724316898?text=${text}`, "_blank");
+                      onClose();
+                    }}
+                    className="py-2.5 px-3 border border-[#25D366] bg-[#25D366]/10 text-[#075E54] text-xs font-semibold hover:bg-[#25D366] hover:text-white transition-colors flex items-center justify-center space-x-1.5"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>WA Dhaval bhai</span>
+                  </button>
+                </div>
               </div>
 
               <div className="flex items-center justify-center space-x-2 text-[10px] text-[#66635E] font-light pt-1">

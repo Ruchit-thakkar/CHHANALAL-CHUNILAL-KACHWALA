@@ -15,6 +15,7 @@ import Footer from "@/components/Footer";
 import QuoteModal from "@/components/QuoteModal";
 import ProjectModal from "@/components/ProjectModal";
 import FloatingActions from "@/components/FloatingActions";
+import ContactPickerModal from "@/components/ContactPickerModal";
 import { ServiceItem } from "@/data/services";
 import { ProjectItem } from "@/data/projects";
 
@@ -23,6 +24,20 @@ export default function Home() {
   const [selectedServiceForQuote, setSelectedServiceForQuote] = useState<string | undefined>(undefined);
   const [selectedProjectForModal, setSelectedProjectForModal] = useState<ProjectItem | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Contact Picker Modal state
+  const [contactPickerOpen, setContactPickerOpen] = useState(false);
+  const [contactPickerType, setContactPickerType] = useState<"call" | "whatsapp">("whatsapp");
+
+  const handleOpenCallPicker = () => {
+    setContactPickerType("call");
+    setContactPickerOpen(true);
+  };
+
+  const handleOpenWhatsAppPicker = () => {
+    setContactPickerType("whatsapp");
+    setContactPickerOpen(true);
+  };
 
   const handleOpenQuoteModal = (serviceName?: string) => {
     setSelectedServiceForQuote(serviceName);
@@ -97,13 +112,19 @@ export default function Home() {
       <Process />
 
       {/* Striking Architectural CTA Section */}
-      <PremiumCTA onOpenQuoteModal={() => handleOpenQuoteModal()} />
+      <PremiumCTA
+        onOpenQuoteModal={() => handleOpenQuoteModal()}
+        onOpenWhatsAppPicker={handleOpenWhatsAppPicker}
+      />
 
       {/* Contact & Inquiry Section */}
       <Contact />
 
       {/* Dark Footer */}
-      <Footer />
+      <Footer
+        onOpenCallPicker={handleOpenCallPicker}
+        onOpenWhatsAppPicker={handleOpenWhatsAppPicker}
+      />
 
       {/* Interactive Modal Lightboxes */}
       <QuoteModal
@@ -122,6 +143,15 @@ export default function Home() {
       <FloatingActions
         onOpenQuoteModal={() => handleOpenQuoteModal()}
         isMobileMenuOpen={isMobileMenuOpen}
+        onOpenCallPicker={handleOpenCallPicker}
+        onOpenWhatsAppPicker={handleOpenWhatsAppPicker}
+      />
+
+      {/* Contact Choice Modal (Girish bhai vs Dhaval bhai) */}
+      <ContactPickerModal
+        isOpen={contactPickerOpen}
+        onClose={() => setContactPickerOpen(false)}
+        actionType={contactPickerType}
       />
     </main>
   );
