@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Inter } from "next/font/google";
-import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -27,7 +26,6 @@ export const metadata: Metadata = {
   title: "Chhanalal Chunilal Kachwala | Glass, Aluminium & Mirror Work",
   description:
     "Glass, aluminium fabrication, glass railing, LED mirrors and custom mirror design solutions by Chhanalal Chunilal Kachwala.",
-  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/cck.png", sizes: "any", type: "image/png" },
@@ -39,11 +37,6 @@ export const metadata: Metadata = {
       { url: "/cck.png", sizes: "180x180", type: "image/png" },
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
-  },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "CCK Studio",
   },
   keywords: [
     "Glass Merchant",
@@ -113,19 +106,12 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/cck.png" type="image/png" />
         <link rel="apple-touch-icon" href="/cck.png" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#171717" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="CCK Studio" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="min-h-screen bg-[#F5F2EC] text-[#171717] font-sans antialiased selection:bg-[#B99A63]/30 selection:text-[#171717]">
-        <ServiceWorkerRegister />
         {children}
       </body>
     </html>

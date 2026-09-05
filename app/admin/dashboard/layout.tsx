@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { isAuthenticatedAdmin } from "@/lib/auth";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminServiceWorkerRegister from "@/components/admin/AdminServiceWorkerRegister";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,7 @@ export default async function AdminDashboardLayout({
 
   return (
     <div className="min-h-screen bg-[#F5F2EC] flex flex-col lg:flex-row">
+      <AdminServiceWorkerRegister />
       {/* Sidebar Navigation */}
       <AdminSidebar />
 
