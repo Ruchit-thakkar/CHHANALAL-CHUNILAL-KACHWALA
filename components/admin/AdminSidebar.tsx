@@ -12,6 +12,8 @@ import {
   X,
   Loader2,
   Calculator,
+  Tags,
+  Briefcase,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -70,6 +72,18 @@ export default function AdminSidebar({ unreadCount: propUnreadCount }: AdminSide
       icon: Calculator,
       active: pathname.startsWith("/admin/dashboard/direct-estimation"),
       badge: unreadEstimationCount > 0 ? unreadEstimationCount : undefined,
+    },
+    {
+      label: "Category",
+      href: "/admin/dashboard/category",
+      icon: Tags,
+      active: pathname.startsWith("/admin/dashboard/category"),
+    },
+    {
+      label: "Selected Work",
+      href: "/admin/dashboard/selected-work",
+      icon: Briefcase,
+      active: pathname.startsWith("/admin/dashboard/selected-work"),
     },
   ];
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { projectsData, ProjectItem } from "@/data/projects";
@@ -9,21 +9,55 @@ interface FeaturedProjectsProps {
   onSelectProject: (project: ProjectItem) => void;
 }
 
+interface FilterTab {
+  label: string;
+  value: string;
+}
+
 export default function FeaturedProjects({ onSelectProject }: FeaturedProjectsProps) {
   const [activeFilter, setActiveFilter] = useState<string>("all");
-
-  const filterTabs = [
+  const [projects, setProjects] = useState<ProjectItem[]>(projectsData);
+  const [filterTabs, setFilterTabs] = useState<FilterTab[]>([
     { label: "All Works", value: "all" },
     { label: "Glass Railing", value: "railing" },
     { label: "Aluminium", value: "aluminium" },
     { label: "Designer Mirrors", value: "mirror" },
     { label: "Custom Glass", value: "glass" },
-  ];
+  ]);
+
+  useEffect(() => {
+    // Fetch dynamic categories
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.categories) && data.categories.length > 0) {
+          const dynamicTabs: FilterTab[] = [
+            { label: "All Works", value: "all" },
+            ...data.categories.map((cat: any) => ({
+              label: cat.name,
+              value: cat.slug,
+            })),
+          ];
+          setFilterTabs(dynamicTabs);
+        }
+      })
+      .catch((err) => console.error("Error loading dynamic categories:", err));
+
+    // Fetch dynamic projects
+    fetch("/api/projects")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.projects) && data.projects.length > 0) {
+          setProjects(data.projects);
+        }
+      })
+      .catch((err) => console.error("Error loading dynamic projects:", err));
+  }, []);
 
   const filteredProjects =
     activeFilter === "all"
-      ? projectsData
-      : projectsData.filter((p) => p.categorySlug === activeFilter);
+      ? projects
+      : projects.filter((p) => p.categorySlug === activeFilter);
 
   return (
     <section id="work" className="py-20 sm:py-28 bg-[#EAE5DB]/40 border-t border-[#D9D4CB]">
@@ -75,7 +109,7 @@ export default function FeaturedProjects({ onSelectProject }: FeaturedProjectsPr
 
             return (
               <div
-                key={project.id}
+                key={project._id || project.id || `proj-${idx}`}
                 onClick={() => onSelectProject(project)}
                 className={`group relative overflow-hidden bg-[#171717] cursor-pointer border border-[#D9D4CB] transition-all duration-300 hover:border-[#B99A63] ${colSpan}`}
               >

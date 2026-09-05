@@ -1,13 +1,14 @@
 export interface ProjectItem {
-  id: string;
+  id?: string;
+  _id?: string;
   category: string;
-  categorySlug: "all" | "railing" | "aluminium" | "mirror" | "glass";
+  categorySlug: string;
   title: string;
-  subtitle: string;
-  locationType: string;
-  aspectRatio: string;
+  subtitle?: string;
+  locationType?: string;
+  aspectRatio?: string;
   image: string;
-  specs: string[];
+  specs?: string[];
   description: string;
 }
 

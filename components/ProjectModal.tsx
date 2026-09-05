@@ -78,50 +78,57 @@ export default function ProjectModal({
           {/* Details & Specifications */}
           <div className="md:col-span-5 p-6 sm:p-8 flex flex-col justify-between">
             <div>
-              <div className="flex items-center space-x-2 text-xs text-[#66635E] mb-2">
-                <MapPin className="w-3.5 h-3.5 text-[#9A7D4A]" />
-                <span className="font-medium">{project.locationType}</span>
-              </div>
+              {project.locationType && (
+                <div className="flex items-center space-x-2 text-xs text-[#66635E] mb-2">
+                  <MapPin className="w-3.5 h-3.5 text-[#9A7D4A]" />
+                  <span className="font-medium">{project.locationType}</span>
+                </div>
+              )}
 
               <h3 id="project-modal-title" className="font-heading text-2xl font-bold text-[#171717] mb-2 leading-tight">
                 {project.title}
               </h3>
 
-              <p className="text-xs uppercase tracking-wider text-[#B99A63] font-semibold mb-4">
-                {project.subtitle}
-              </p>
+              {project.subtitle && (
+                <p className="text-xs uppercase tracking-wider text-[#B99A63] font-semibold mb-4">
+                  {project.subtitle}
+                </p>
+              )}
 
               <p className="text-xs sm:text-sm text-[#66635E] font-light leading-relaxed mb-6">
                 {project.description}
               </p>
 
               {/* Technical Specs */}
-              <div className="border-t border-b border-[#D9D4CB] py-4 mb-6">
-                <span className="text-[11px] uppercase tracking-wider font-semibold text-[#171717] block mb-2.5">
-                  Key Specifications
-                </span>
-                <ul className="space-y-2">
-                  {project.specs.map((spec, i) => (
-                    <li key={i} className="flex items-center text-xs text-[#66635E]">
-                      <div className="w-4 h-4 rounded-full bg-[#B99A63]/20 flex items-center justify-center text-[#9A7D4A] mr-2 shrink-0">
-                        <Check className="w-2.5 h-2.5 stroke-[3]" />
-                      </div>
-                      <span>{spec}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {project.specs && project.specs.length > 0 && (
+                <div className="border-t border-b border-[#D9D4CB] py-4 mb-6">
+                  <span className="text-[11px] uppercase tracking-wider font-semibold text-[#171717] block mb-2.5">
+                    Key Specifications
+                  </span>
+                  <ul className="space-y-2">
+                    {project.specs.map((spec, i) => (
+                      <li key={i} className="flex items-center text-xs text-[#66635E]">
+                        <div className="w-4 h-4 rounded-full bg-[#B99A63]/20 flex items-center justify-center text-[#9A7D4A] mr-2 shrink-0">
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        </div>
+                        <span>{spec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
 
             {/* Action */}
             <div>
-              <button
-                onClick={() => onRequestQuoteForProject(project)}
-                className="w-full py-3.5 bg-[#171717] text-white text-xs uppercase tracking-widest font-semibold hover:bg-[#B99A63] transition-colors flex items-center justify-center space-x-2 group"
+              <a
+                href="#contact"
+                onClick={onClose}
+                className="w-full py-3.5 bg-[#171717] text-white text-xs uppercase tracking-widest font-semibold hover:bg-[#B99A63] hover:text-[#171717] transition-colors flex items-center justify-center space-x-2 group text-center"
               >
-                <span>Request Similar Installation</span>
+                <span>Contact Us</span>
                 <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-              </button>
+              </a>
             </div>
           </div>
         </div>
