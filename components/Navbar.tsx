@@ -46,8 +46,8 @@ export default function Navbar({
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-            ? "bg-[#F5F2EC]/90 backdrop-blur-md shadow-xs border-b border-[#D9D4CB]/60 py-3.5"
-            : "bg-transparent py-5 lg:py-6"
+          ? "bg-[#F5F2EC]/90 backdrop-blur-md shadow-xs border-b border-[#D9D4CB]/60 py-3.5"
+          : "bg-transparent py-5 lg:py-6"
           }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -92,8 +92,8 @@ export default function Navbar({
               <button
                 onClick={() => onOpenQuoteModal()}
                 className={`group inline-flex items-center justify-center text-xs uppercase tracking-wider font-semibold px-5 py-2.5 transition-all duration-300 border ${isScrolled
-                    ? "border-[#171717] bg-[#171717] text-white hover:bg-[#B99A63] hover:border-[#B99A63]"
-                    : "border-white/80 bg-white/10 text-white backdrop-blur-xs hover:bg-white hover:text-[#171717] hover:border-white"
+                  ? "border-[#171717] bg-[#171717] text-white hover:bg-[#B99A63] hover:border-[#B99A63]"
+                  : "border-white/80 bg-white/10 text-white backdrop-blur-xs hover:bg-white hover:text-[#171717] hover:border-white"
                   }`}
               >
                 <span>Get a Quote</span>
@@ -106,8 +106,8 @@ export default function Navbar({
               <button
                 onClick={() => onOpenQuoteModal()}
                 className={`text-xs px-3 py-1.5 font-medium uppercase tracking-wider border ${isScrolled
-                    ? "border-[#171717] text-[#171717]"
-                    : "border-white/80 text-white bg-black/20 backdrop-blur-xs"
+                  ? "border-[#171717] text-[#171717]"
+                  : "border-white/80 text-white bg-black/20 backdrop-blur-xs"
                   }`}
               >
                 Quote

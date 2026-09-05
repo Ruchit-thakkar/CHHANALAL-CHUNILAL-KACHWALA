@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
             Admin Login
           </h1>
           <p className="text-xs text-[#66635E] mt-2 font-light">
-            Sign in to manage customer project inquiries and follow-ups.
+            Sign in to manage customer online inquiries, direct estimations, and follow-ups.
           </p>
         </div>
 

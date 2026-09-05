@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   Loader2,
+  Calculator,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -23,21 +24,19 @@ export default function AdminSidebar({ unreadCount: propUnreadCount }: AdminSide
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [unreadCount, setUnreadCount] = useState<number>(propUnreadCount || 0);
+  const [unreadEstimationCount, setUnreadEstimationCount] = useState<number>(0);
 
-  // Fetch unread count if not provided
+  // Fetch unread counts
   useEffect(() => {
-    if (propUnreadCount !== undefined) {
-      setUnreadCount(propUnreadCount);
-    } else {
-      fetch("/api/admin/stats")
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success && data.stats) {
-            setUnreadCount(data.stats.not_contacted);
-          }
-        })
-        .catch(() => {});
-    }
+    fetch("/api/admin/stats")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          if (data.stats) setUnreadCount(data.stats.not_contacted);
+          if (data.estimationStats) setUnreadEstimationCount(data.estimationStats.not_contacted);
+        }
+      })
+      .catch(() => {});
   }, [propUnreadCount, pathname]);
 
   const handleLogout = async () => {
@@ -59,11 +58,18 @@ export default function AdminSidebar({ unreadCount: propUnreadCount }: AdminSide
       active: pathname === "/admin/dashboard",
     },
     {
-      label: "Online Inquiries",
+      label: "Online Inquiry",
       href: "/admin/dashboard/inquiries",
       icon: Inbox,
       active: pathname.startsWith("/admin/dashboard/inquiries"),
       badge: unreadCount > 0 ? unreadCount : undefined,
+    },
+    {
+      label: "Direct Estimation",
+      href: "/admin/dashboard/direct-estimation",
+      icon: Calculator,
+      active: pathname.startsWith("/admin/dashboard/direct-estimation"),
+      badge: unreadEstimationCount > 0 ? unreadEstimationCount : undefined,
     },
   ];
 

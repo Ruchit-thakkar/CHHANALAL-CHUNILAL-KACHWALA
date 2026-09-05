@@ -128,11 +128,11 @@ export default function AdminDashboardPage() {
             Dashboard
           </h1>
           <p className="text-xs sm:text-sm text-[#66635E] font-light mt-1">
-            Manage customer project inquiries and follow-ups.
+            Manage customer project inquiries, direct estimations, and follow-ups.
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
             onClick={() => fetchData()}
@@ -145,9 +145,16 @@ export default function AdminDashboardPage() {
 
           <Link
             href="/admin/dashboard/inquiries"
+            className="inline-flex items-center space-x-1.5 px-3.5 py-2.5 bg-white border border-[#D9D4CB] hover:border-[#171717] text-[#171717] text-xs font-semibold uppercase tracking-wider transition-colors"
+          >
+            <span>Online Inquiries</span>
+          </Link>
+
+          <Link
+            href="/admin/dashboard/direct-estimation"
             className="inline-flex items-center space-x-1.5 px-4 py-2.5 bg-[#171717] text-white hover:bg-[#B99A63] text-xs font-semibold uppercase tracking-wider transition-colors"
           >
-            <span>All Inquiries</span>
+            <span>Direct Estimations</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -189,7 +196,7 @@ export default function AdminDashboardPage() {
         <div className="p-5 sm:p-6 border-b border-[#D9D4CB] flex items-center justify-between">
           <div>
             <h2 className="font-heading text-lg font-bold text-[#171717]">
-              Recent Inquiries
+              Recent Online Inquiries
             </h2>
             <p className="text-xs text-[#66635E] font-light">
               Latest client submissions sorted newest first.
@@ -200,7 +207,7 @@ export default function AdminDashboardPage() {
             href="/admin/dashboard/inquiries"
             className="text-xs uppercase tracking-wider font-semibold text-[#B99A63] hover:text-[#9A7D4A] transition-colors"
           >
-            View All →
+            View All Inquiries →
           </Link>
         </div>
 

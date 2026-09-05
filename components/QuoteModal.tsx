@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, Check, MessageSquare, ArrowRight, Shield } from "lucide-react";
+import { X, Check, MessageSquare, ArrowRight, Shield, Loader2, AlertCircle } from "lucide-react";
 
 interface QuoteModalProps {
   isOpen: boolean;
@@ -20,6 +20,9 @@ export default function QuoteModal({
   const [phone, setPhone] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [assignedEstimationId, setAssignedEstimationId] = useState<string>("");
 
   useEffect(() => {
     if (preselectedService) {
@@ -52,27 +55,76 @@ export default function QuoteModal({
     "Toughened Glass & Merchant Supply",
   ];
 
-  const handleWhatsAppQuote = () => {
-    const text = `*Custom Quote Request*%0A*Business:* Chhanalal Chunilal Kachwala%0A%0A*Name:* ${encodeURIComponent(
-      name || "Inquirer"
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(null);
+
+    if (!phone.trim()) {
+      setErrorMessage("Please enter your phone number so we can provide your estimate.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch("/api/estimations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.trim() || "Valued Client",
+          phone: phone.trim(),
+          service,
+          projectType,
+          dimensionsNotes: notes.trim(),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to submit quote request. Please try again.");
+      }
+
+      setAssignedEstimationId(data.estimationId || "");
+      setSubmitted(true);
+      setName("");
+      setPhone("");
+      setNotes("");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Submission failed";
+      setErrorMessage(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleWhatsAppSend = (targetPhone: string) => {
+    if (phone.trim() || name.trim()) {
+      fetch("/api/estimations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim() || "WhatsApp Client",
+          phone: phone.trim() || targetPhone,
+          service,
+          projectType,
+          dimensionsNotes: notes.trim() || "Quote spec via direct WhatsApp",
+        }),
+      }).catch(() => {});
+    }
+
+    const text = `*Direct Estimation - Custom Quote Request*%0A*Business:* Chhanalal Chunilal Kachwala%0A%0A*Name:* ${encodeURIComponent(
+      name || "Client"
     )}%0A*Phone:* ${encodeURIComponent(phone || "Not specified")}%0A*Service:* ${encodeURIComponent(
       service
     )}%0A*Project Type:* ${encodeURIComponent(
       projectType
     )}%0A*Dimensions / Notes:* ${encodeURIComponent(notes || "Please advise on specs")}`;
 
-    window.open(`https://wa.me/919876543210?text=${text}`, "_blank");
+    window.open(`https://wa.me/${targetPhone}?text=${text}`, "_blank");
     onClose();
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!phone) return;
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      onClose();
-    }, 1800);
   };
 
   return (
@@ -101,15 +153,30 @@ export default function QuoteModal({
         </button>
 
         {submitted ? (
-          <div className="py-12 text-center">
-            <div className="w-12 h-12 rounded-full bg-[#B99A63]/20 flex items-center justify-center text-[#9A7D4A] mx-auto mb-4">
-              <Check className="w-6 h-6 stroke-[2.5]" />
+          <div className="py-12 text-center animate-fadeIn">
+            <div className="w-14 h-14 rounded-full bg-[#B99A63]/20 flex items-center justify-center text-[#9A7D4A] mx-auto mb-4">
+              <Check className="w-7 h-7 stroke-[2.5]" />
             </div>
+            {assignedEstimationId && (
+              <span className="text-[11px] font-bold uppercase tracking-widest text-[#B99A63] block mb-1">
+                Estimation Reference: {assignedEstimationId}
+              </span>
+            )}
             <h3 className="font-heading text-2xl font-bold mb-2">Quote Request Sent</h3>
-            <p className="text-sm text-[#66635E] font-light max-w-sm mx-auto">
-              Our estimation team is calculating material and installation costs for your{" "}
-              <strong>{service}</strong> request. We will contact you at <strong>{phone}</strong> shortly.
+            <p className="text-sm text-[#66635E] font-light max-w-sm mx-auto mb-6 leading-relaxed">
+              Our estimation team has received your project details for{" "}
+              <strong>{service}</strong> ({projectType}). We will calculate material and installation costs and contact you shortly.
             </p>
+            <button
+              type="button"
+              onClick={() => {
+                setSubmitted(false);
+                onClose();
+              }}
+              className="text-xs uppercase tracking-wider font-semibold underline text-[#171717] hover:text-[#9A7D4A]"
+            >
+              Close Window
+            </button>
           </div>
         ) : (
           <div>
@@ -125,6 +192,13 @@ export default function QuoteModal({
               </p>
             </div>
 
+            {errorMessage && (
+              <div className="mb-5 p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs flex items-center space-x-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Service Selection Pills */}
               <div>
@@ -138,8 +212,8 @@ export default function QuoteModal({
                       key={opt}
                       onClick={() => setService(opt)}
                       className={`p-2.5 text-left border transition-colors ${service === opt
-                          ? "border-[#171717] bg-[#171717] text-white font-medium"
-                          : "border-[#D9D4CB] bg-white text-[#66635E] hover:border-[#171717]"
+                        ? "border-[#171717] bg-[#171717] text-white font-medium"
+                        : "border-[#D9D4CB] bg-white text-[#66635E] hover:border-[#171717]"
                         }`}
                     >
                       {opt}
@@ -160,8 +234,8 @@ export default function QuoteModal({
                       key={type}
                       onClick={() => setProjectType(type)}
                       className={`py-2 text-center border transition-colors ${projectType === type
-                          ? "border-[#B99A63] bg-[#B99A63]/15 text-[#9A7D4A] font-semibold"
-                          : "border-[#D9D4CB] bg-white text-[#66635E] hover:border-[#B99A63]"
+                        ? "border-[#B99A63] bg-[#B99A63]/15 text-[#9A7D4A] font-semibold"
+                        : "border-[#D9D4CB] bg-white text-[#66635E] hover:border-[#B99A63]"
                         }`}
                     >
                       {type}
@@ -229,26 +303,26 @@ export default function QuoteModal({
               <div className="pt-3 space-y-2">
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-[#171717] text-white text-xs uppercase tracking-widest font-semibold hover:bg-[#B99A63] transition-colors flex items-center justify-center space-x-2"
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 bg-[#171717] text-white text-xs uppercase tracking-widest font-semibold hover:bg-[#B99A63] transition-colors flex items-center justify-center space-x-2 disabled:opacity-50"
                 >
-                  <span>Submit For Estimation</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      <span>Submitting For Estimation...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Submit For Estimation</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  )}
                 </button>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button
                     type="button"
-                    onClick={() => {
-                      const text = `*Custom Quote Request*%0A*Business:* Chhanalal Chunilal Kachwala%0A%0A*Name:* ${encodeURIComponent(
-                        name || "Inquirer"
-                      )}%0A*Phone:* ${encodeURIComponent(phone || "Not specified")}%0A*Service:* ${encodeURIComponent(
-                        service
-                      )}%0A*Project Type:* ${encodeURIComponent(
-                        projectType
-                      )}%0A*Dimensions / Notes:* ${encodeURIComponent(notes || "Please advise on specs")}`;
-                      window.open(`https://wa.me/919227626898?text=${text}`, "_blank");
-                      onClose();
-                    }}
+                    onClick={() => handleWhatsAppSend("919227626898")}
                     className="py-2.5 px-3 border border-[#25D366] bg-[#25D366]/10 text-[#075E54] text-xs font-semibold hover:bg-[#25D366] hover:text-white transition-colors flex items-center justify-center space-x-1.5"
                   >
                     <MessageSquare className="w-3.5 h-3.5" />
@@ -257,17 +331,7 @@ export default function QuoteModal({
 
                   <button
                     type="button"
-                    onClick={() => {
-                      const text = `*Custom Quote Request*%0A*Business:* Chhanalal Chunilal Kachwala%0A%0A*Name:* ${encodeURIComponent(
-                        name || "Inquirer"
-                      )}%0A*Phone:* ${encodeURIComponent(phone || "Not specified")}%0A*Service:* ${encodeURIComponent(
-                        service
-                      )}%0A*Project Type:* ${encodeURIComponent(
-                        projectType
-                      )}%0A*Dimensions / Notes:* ${encodeURIComponent(notes || "Please advise on specs")}`;
-                      window.open(`https://wa.me/919724316898?text=${text}`, "_blank");
-                      onClose();
-                    }}
+                    onClick={() => handleWhatsAppSend("919724316898")}
                     className="py-2.5 px-3 border border-[#25D366] bg-[#25D366]/10 text-[#075E54] text-xs font-semibold hover:bg-[#25D366] hover:text-white transition-colors flex items-center justify-center space-x-1.5"
                   >
                     <MessageSquare className="w-3.5 h-3.5" />

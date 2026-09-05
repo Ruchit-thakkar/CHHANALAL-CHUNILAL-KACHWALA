@@ -16,6 +16,7 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [assignedInquiryId, setAssignedInquiryId] = useState<string>("");
 
   const servicesList = [
     "Glass Merchant",
@@ -77,6 +78,7 @@ export default function Contact() {
       }
 
       // Success
+      setAssignedInquiryId(data.inquiryId || "");
       setSubmitted(true);
       // Clear form after successful submission
       setFormData({
@@ -250,6 +252,11 @@ export default function Contact() {
               {submitted ? (
                 <div className="py-12 px-6 text-center bg-[#FAF8F5] border border-[#D9D4CB] animate-fadeIn">
                   <CheckCircle2 className="w-14 h-14 text-[#9A7D4A] mx-auto mb-4" />
+                  {assignedInquiryId && (
+                    <span className="text-[11px] font-bold uppercase tracking-widest text-[#B99A63] block mb-1">
+                      Inquiry Reference: {assignedInquiryId}
+                    </span>
+                  )}
                   <h4 className="font-heading text-2xl font-bold text-[#171717] mb-2">
                     Inquiry Received
                   </h4>
@@ -291,9 +298,8 @@ export default function Contact() {
                           if (errors.name) setErrors({ ...errors, name: "" });
                         }}
                         placeholder="e.g. Rahul Patel"
-                        className={`w-full px-4 py-3 bg-[#F5F2EC]/60 border text-sm text-[#171717] placeholder-[#66635E]/60 focus:outline-none focus:border-[#171717] focus:bg-white transition-colors ${
-                          errors.name ? "border-red-500" : "border-[#D9D4CB]"
-                        }`}
+                        className={`w-full px-4 py-3 bg-[#F5F2EC]/60 border text-sm text-[#171717] placeholder-[#66635E]/60 focus:outline-none focus:border-[#171717] focus:bg-white transition-colors ${errors.name ? "border-red-500" : "border-[#D9D4CB]"
+                          }`}
                       />
                       {errors.name && (
                         <p className="flex items-center text-xs text-red-600 mt-1.5 font-medium">
@@ -319,9 +325,8 @@ export default function Contact() {
                           if (errors.phone) setErrors({ ...errors, phone: "" });
                         }}
                         placeholder="e.g. 9876543210"
-                        className={`w-full px-4 py-3 bg-[#F5F2EC]/60 border text-sm text-[#171717] placeholder-[#66635E]/60 focus:outline-none focus:border-[#171717] focus:bg-white transition-colors ${
-                          errors.phone ? "border-red-500" : "border-[#D9D4CB]"
-                        }`}
+                        className={`w-full px-4 py-3 bg-[#F5F2EC]/60 border text-sm text-[#171717] placeholder-[#66635E]/60 focus:outline-none focus:border-[#171717] focus:bg-white transition-colors ${errors.phone ? "border-red-500" : "border-[#D9D4CB]"
+                          }`}
                       />
                       {errors.phone && (
                         <p className="flex items-center text-xs text-red-600 mt-1.5 font-medium">
@@ -380,9 +385,8 @@ export default function Contact() {
                         if (errors.projectDetails) setErrors({ ...errors, projectDetails: "" });
                       }}
                       placeholder="Tell us about your project, requirements, approximate dimensions, design preferences, etc."
-                      className={`w-full px-4 py-3 bg-[#F5F2EC]/60 border text-sm text-[#171717] placeholder-[#66635E]/60 focus:outline-none focus:border-[#171717] focus:bg-white transition-colors ${
-                        errors.projectDetails ? "border-red-500" : "border-[#D9D4CB]"
-                      }`}
+                      className={`w-full px-4 py-3 bg-[#F5F2EC]/60 border text-sm text-[#171717] placeholder-[#66635E]/60 focus:outline-none focus:border-[#171717] focus:bg-white transition-colors ${errors.projectDetails ? "border-red-500" : "border-[#D9D4CB]"
+                        }`}
                     />
                     {errors.projectDetails && (
                       <p className="flex items-center text-xs text-red-600 mt-1.5 font-medium">
@@ -403,11 +407,10 @@ export default function Contact() {
                           type="button"
                           key={method}
                           onClick={() => setFormData({ ...formData, preferredContact: method })}
-                          className={`p-3 text-xs uppercase tracking-wider font-semibold border text-center transition-all ${
-                            formData.preferredContact === method
+                          className={`p-3 text-xs uppercase tracking-wider font-semibold border text-center transition-all ${formData.preferredContact === method
                               ? "border-[#171717] bg-[#171717] text-white"
                               : "border-[#D9D4CB] bg-[#F5F2EC]/40 text-[#66635E] hover:border-[#171717]"
-                          }`}
+                            }`}
                         >
                           {method === "WhatsApp" ? "WhatsApp" : "Phone Call"}
                         </button>

@@ -7,46 +7,46 @@ import {
   MessageSquare,
   Copy,
   Check,
-  Clock,
   Calendar,
   Layers,
   FileText,
   Save,
   Loader2,
   Trash2,
+  Building,
 } from "lucide-react";
 import StatusBadge from "./StatusBadge";
-import { InquiryStatus } from "@/lib/models/Inquiry";
+import { EstimationStatus } from "@/lib/models/Estimation";
 
-export interface InquiryItem {
+export interface EstimationItem {
   _id: string;
-  inquiryId: string;
+  estimationId: string;
   name: string;
   phone: string;
   service: string;
-  projectDetails: string;
-  preferredContact: string;
-  status: InquiryStatus;
+  projectType: string;
+  dimensionsNotes: string;
+  status: EstimationStatus;
   adminNotes?: string;
   contactedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
-interface InquiryDetailModalProps {
-  inquiry: InquiryItem | null;
+interface EstimationDetailModalProps {
+  estimation: EstimationItem | null;
   isOpen: boolean;
   onClose: () => void;
   onUpdate: () => void;
 }
 
-export default function InquiryDetailModal({
-  inquiry,
+export default function EstimationDetailModal({
+  estimation,
   isOpen,
   onClose,
   onUpdate,
-}: InquiryDetailModalProps) {
-  const [currentStatus, setCurrentStatus] = useState<InquiryStatus>("not_contacted");
+}: EstimationDetailModalProps) {
+  const [currentStatus, setCurrentStatus] = useState<EstimationStatus>("not_contacted");
   const [adminNotes, setAdminNotes] = useState<string>("");
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [isSavingNotes, setIsSavingNotes] = useState(false);
@@ -55,11 +55,11 @@ export default function InquiryDetailModal({
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (inquiry) {
-      setCurrentStatus(inquiry.status);
-      setAdminNotes(inquiry.adminNotes || "");
+    if (estimation) {
+      setCurrentStatus(estimation.status);
+      setAdminNotes(estimation.adminNotes || "");
     }
-  }, [inquiry]);
+  }, [estimation]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -73,7 +73,7 @@ export default function InquiryDetailModal({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen || !inquiry) return null;
+  if (!isOpen || !estimation) return null;
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -83,16 +83,16 @@ export default function InquiryDetailModal({
   };
 
   const handleCopyPhone = () => {
-    navigator.clipboard.writeText(inquiry.phone);
+    navigator.clipboard.writeText(estimation.phone);
     setCopied(true);
     showToast("Phone number copied to clipboard");
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleStatusChange = async (newStatus: InquiryStatus) => {
+  const handleStatusChange = async (newStatus: EstimationStatus) => {
     setIsUpdatingStatus(true);
     try {
-      const res = await fetch(`/api/inquiries/${inquiry._id}`, {
+      const res = await fetch(`/api/estimations/${estimation._id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
@@ -115,7 +115,7 @@ export default function InquiryDetailModal({
   const handleSaveNotes = async () => {
     setIsSavingNotes(true);
     try {
-      const res = await fetch(`/api/inquiries/${inquiry._id}`, {
+      const res = await fetch(`/api/estimations/${estimation._id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ adminNotes }),
@@ -135,11 +135,11 @@ export default function InquiryDetailModal({
   };
 
   const handleDelete = async () => {
-    if (!confirm(`Are you sure you want to delete estimation ${inquiry.inquiryId}?`)) return;
+    if (!confirm(`Are you sure you want to delete estimation ${estimation.estimationId}?`)) return;
 
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/inquiries/${inquiry._id}`, {
+      const res = await fetch(`/api/estimations/${estimation._id}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -150,23 +150,22 @@ export default function InquiryDetailModal({
         showToast(data.error || "Failed to delete estimation");
       }
     } catch {
-      showToast("Error deleting inquiry");
+      showToast("Error deleting estimation");
     } finally {
       setIsDeleting(false);
     }
   };
 
-  const cleanPhoneForWA = inquiry.phone.replace(/[^0-9]/g, "");
-  const formattedWAPhone = cleanPhoneForWA.startsWith("91")
-    ? cleanPhoneForWA
-    : `91${cleanPhoneForWA}`;
+  const cleanPhone = estimation.phone.replace(/[^0-9]/g, "");
+  const formattedWAPhone = cleanPhone.startsWith("91") ? cleanPhone : `91${cleanPhone}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-end">
       {/* Backdrop */}
       <div
-        onClick={onClose}
         className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+        onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Drawer / Modal Container */}
@@ -176,10 +175,10 @@ export default function InquiryDetailModal({
           <div className="flex items-center space-x-3">
             <div>
               <span className="text-[10px] font-semibold uppercase tracking-wider text-[#B99A63] block leading-none mb-0.5">
-                Online Inquiry
+                Direct Estimation
               </span>
               <span className="font-heading text-lg font-bold text-[#171717]">
-                {inquiry.inquiryId}
+                {estimation.estimationId}
               </span>
             </div>
             <StatusBadge status={currentStatus} />
@@ -219,24 +218,24 @@ export default function InquiryDetailModal({
           {/* Quick Contact Bar */}
           <div className="bg-white border border-[#D9D4CB] p-5 shadow-xs">
             <span className="text-[10px] uppercase tracking-widest font-semibold text-[#B99A63] block mb-2">
-              Customer Actions
+              Customer Information
             </span>
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h3 className="font-heading text-xl font-bold text-[#171717]">
-                  {inquiry.name}
+                  {estimation.name}
                 </h3>
-                <p className="text-sm text-[#66635E] font-medium">{inquiry.phone}</p>
+                <p className="text-sm text-[#66635E] font-medium">{estimation.phone}</p>
                 <p className="text-xs text-[#9A7D4A] mt-0.5">
-                  Prefers: <strong>{inquiry.preferredContact}</strong>
+                  Direct Estimation Quote Request
                 </p>
               </div>
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-2">
                 <a
-                  href={`tel:${inquiry.phone}`}
+                  href={`tel:${estimation.phone}`}
                   className="inline-flex items-center space-x-1.5 px-3 py-2 bg-[#171717] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#B99A63] transition-colors"
                 >
                   <Phone className="w-3.5 h-3.5" />
@@ -245,9 +244,9 @@ export default function InquiryDetailModal({
 
                 <a
                   href={`https://wa.me/${formattedWAPhone}?text=Hello%20${encodeURIComponent(
-                    inquiry.name
-                  )},%20this%20is%20Chhanalal%20Chunilal%20Kachwala%20regarding%20your%20direct%20estimation%20quote%20request%20${encodeURIComponent(
-                    inquiry.inquiryId
+                    estimation.name
+                  )},%20this%20is%20Chhanalal%20Chunilal%20Kachwala%20regarding%20your%20Direct%20Estimation%20quote%20request%20${encodeURIComponent(
+                    estimation.estimationId
                   )}.`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -300,12 +299,13 @@ export default function InquiryDetailModal({
                 <button
                   key={item.value}
                   type="button"
-                  onClick={() => handleStatusChange(item.value as InquiryStatus)}
+                  onClick={() => handleStatusChange(item.value as EstimationStatus)}
                   disabled={isUpdatingStatus}
-                  className={`py-2 px-2.5 text-xs font-semibold text-center border transition-all ${currentStatus === item.value
-                    ? "border-[#171717] bg-[#171717] text-white shadow-xs"
-                    : "border-[#D9D4CB] bg-[#FAF8F5] text-[#66635E] hover:border-[#171717] hover:text-[#171717]"
-                    }`}
+                  className={`py-2 px-2.5 text-xs font-semibold text-center border transition-all ${
+                    currentStatus === item.value
+                      ? "border-[#171717] bg-[#171717] text-white shadow-xs"
+                      : "border-[#D9D4CB] bg-[#FAF8F5] text-[#66635E] hover:border-[#171717] hover:text-[#171717]"
+                  }`}
                 >
                   {item.label}
                 </button>
@@ -313,28 +313,44 @@ export default function InquiryDetailModal({
             </div>
           </div>
 
-          {/* Project Details */}
+          {/* Project & Estimation Details */}
           <div className="bg-white border border-[#D9D4CB] p-5 shadow-xs space-y-4">
             <span className="text-[10px] uppercase tracking-widest font-semibold text-[#B99A63] block">
               Direct Estimation Specifications
             </span>
 
-            <div>
-              <span className="text-xs text-[#66635E] block font-medium mb-1">
-                Service Required:
-              </span>
-              <div className="inline-flex items-center space-x-2 text-sm font-heading font-bold text-[#171717]">
-                <Layers className="w-4 h-4 text-[#9A7D4A]" />
-                <span>{inquiry.service}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <span className="text-xs text-[#66635E] block font-medium mb-1">
+                  Service Required:
+                </span>
+                <div className="inline-flex items-center space-x-2 text-sm font-heading font-bold text-[#171717]">
+                  <Layers className="w-4 h-4 text-[#9A7D4A]" />
+                  <span>{estimation.service}</span>
+                </div>
+              </div>
+
+              <div>
+                <span className="text-xs text-[#66635E] block font-medium mb-1">
+                  Project Type:
+                </span>
+                <div className="inline-flex items-center space-x-2 text-sm font-heading font-bold text-[#171717]">
+                  <Building className="w-4 h-4 text-[#9A7D4A]" />
+                  <span className="px-2 py-0.5 bg-[#FAF8F5] border border-[#D9D4CB] text-xs uppercase font-semibold">
+                    {estimation.projectType}
+                  </span>
+                </div>
               </div>
             </div>
 
             <div>
               <span className="text-xs text-[#66635E] block font-medium mb-1.5">
-                Client Project Details:
+                Approximate Dimensions / Description / Notes:
               </span>
-              <div className="bg-[#FAF8F5] border border-[#D9D4CB] p-4 text-xs sm:text-sm text-[#171717] leading-relaxed whitespace-pre-wrap">
-                {inquiry.projectDetails}
+              <div className="bg-[#FAF8F5] border border-[#D9D4CB] p-4 text-xs sm:text-sm text-[#171717] leading-relaxed whitespace-pre-wrap min-h-[60px]">
+                {estimation.dimensionsNotes || (
+                  <span className="text-[#66635E]/60 italic">No additional dimensions or notes specified by client.</span>
+                )}
               </div>
             </div>
           </div>
@@ -352,7 +368,7 @@ export default function InquiryDetailModal({
               rows={3}
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
-              placeholder="e.g. Balcony glass railing site visit planned for Thursday 4 PM. Customer preferred extra clear glass."
+              placeholder="e.g. Quoted ₹12,500 for toughened glass railing. Site visit scheduled for Saturday."
               className="w-full px-3 py-2.5 bg-[#FAF8F5] border border-[#D9D4CB] text-xs sm:text-sm text-[#171717] focus:outline-none focus:border-[#171717] transition-colors"
             />
 
@@ -378,22 +394,26 @@ export default function InquiryDetailModal({
             </div>
           </div>
 
-          {/* Inquiry Metadata & Timestamps */}
-          <div className="border-t border-[#D9D4CB] pt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px] text-[#66635E]">
-            <div className="flex items-center space-x-1.5">
+          {/* Metadata Footer */}
+          <div className="text-[11px] text-[#66635E] border-t border-[#D9D4CB] pt-4 space-y-1">
+            <div className="flex items-center space-x-2">
               <Calendar className="w-3.5 h-3.5 text-[#9A7D4A]" />
-              <span>Created: {new Date(inquiry.createdAt).toLocaleString()}</span>
+              <span>
+                Received: {new Date(estimation.createdAt).toLocaleString("en-IN", {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                })}
+              </span>
             </div>
-
-            <div className="flex items-center space-x-1.5">
-              <Clock className="w-3.5 h-3.5 text-[#9A7D4A]" />
-              <span>Updated: {new Date(inquiry.updatedAt).toLocaleString()}</span>
-            </div>
-
-            {inquiry.contactedAt && (
-              <div className="flex items-center space-x-1.5">
-                <FileText className="w-3.5 h-3.5 text-blue-600" />
-                <span>Contacted: {new Date(inquiry.contactedAt).toLocaleString()}</span>
+            {estimation.contactedAt && (
+              <div className="flex items-center space-x-2 text-blue-700">
+                <FileText className="w-3.5 h-3.5" />
+                <span>
+                  First Contacted: {new Date(estimation.contactedAt).toLocaleString("en-IN", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })}
+                </span>
               </div>
             )}
           </div>
