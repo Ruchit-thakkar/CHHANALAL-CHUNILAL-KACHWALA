@@ -179,13 +179,7 @@ export default function Footer({ onOpenCallPicker, onOpenWhatsAppPicker }: Foote
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-white/50 font-light gap-4">
           <p>© 2026 Chhanalal Chunilal Kachwala. All rights reserved.</p>
           <div className="flex items-center space-x-6">
-            <Link
-              href="/admin"
-              className="text-white/30 hover:text-[#B99A63] transition-colors text-[11px] tracking-wider uppercase font-medium"
-            >
-              Admin Login
-            </Link>
-            <span className="text-white/20">•</span>
+           
             <span className="text-white/40">Architectural Fabrication Studio</span>
             <span className="text-white/20">•</span>
             <a

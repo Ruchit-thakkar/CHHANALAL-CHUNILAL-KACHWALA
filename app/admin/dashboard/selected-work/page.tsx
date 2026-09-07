@@ -266,20 +266,23 @@ export default function SelectedWorkManagementPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#2A2A2A] pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-heading text-2xl font-bold tracking-tight text-white uppercase flex items-center gap-2.5">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#B99A63] block mb-1">
+            Portfolio Showcase
+          </span>
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-[#171717] flex items-center gap-2.5">
             <Briefcase className="w-6 h-6 text-[#B99A63]" />
             Selected Work
           </h1>
-          <p className="text-xs text-[#A3A3A3] mt-1 tracking-wide">
-            Manage portfolio showcase items. Only <strong className="text-white">Title</strong>, <strong className="text-white">Category</strong>, and <strong className="text-white">Description</strong> are required.
+          <p className="text-xs sm:text-sm text-[#66635E] font-light mt-1">
+            Manage portfolio showcase items. Only <strong className="text-[#171717]">Title</strong>, <strong className="text-[#171717]">Category</strong>, and <strong className="text-[#171717]">Description</strong> are required.
           </p>
         </div>
 
         <button
           onClick={openCreateModal}
-          className="inline-flex items-center justify-center gap-2 bg-[#B99A63] hover:bg-[#A38550] text-[#171717] px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
+          className="inline-flex items-center justify-center gap-2 bg-[#171717] hover:bg-[#B99A63] text-[#FAF8F5] px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors shadow-xs"
         >
           <Plus className="w-4 h-4" />
           Add Project
@@ -288,21 +291,21 @@ export default function SelectedWorkManagementPage() {
 
       {/* Content */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-[#171717] border border-[#2A2A2A]">
-          <Loader2 className="w-8 h-8 animate-spin text-[#B99A63]" />
-          <p className="text-xs text-[#A3A3A3] mt-3 uppercase tracking-wider">Loading projects...</p>
+        <div className="flex flex-col items-center justify-center py-20 bg-white border border-[#D9D4CB] shadow-xs">
+          <Loader2 className="w-7 h-7 animate-spin text-[#B99A63]" />
+          <p className="text-xs text-[#66635E] mt-3 uppercase tracking-wider">Loading projects...</p>
         </div>
       ) : error ? (
-        <div className="p-6 bg-red-950/30 border border-red-800 text-red-300 text-xs flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+        <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-500" />
           <span>{error}</span>
         </div>
       ) : projects.length === 0 ? (
-        <div className="p-12 text-center bg-[#171717] border border-[#2A2A2A]">
-          <p className="text-sm text-[#A3A3A3]">No projects found in database.</p>
+        <div className="p-16 text-center bg-white border border-[#D9D4CB] shadow-xs">
+          <p className="text-xs sm:text-sm text-[#66635E] font-light">No projects found in database.</p>
           <button
             onClick={openCreateModal}
-            className="mt-4 inline-flex items-center gap-2 bg-[#B99A63] text-[#171717] px-4 py-2 text-xs font-bold uppercase tracking-wider"
+            className="mt-4 inline-flex items-center gap-2 bg-[#171717] hover:bg-[#B99A63] text-[#FAF8F5] px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors"
           >
             <Plus className="w-4 h-4" /> Create First Project
           </button>
@@ -312,11 +315,11 @@ export default function SelectedWorkManagementPage() {
           {projects.map((proj) => (
             <div
               key={proj._id}
-              className="bg-[#171717] border border-[#2A2A2A] hover:border-[#B99A63]/50 transition-colors flex flex-col justify-between overflow-hidden group"
+              className="bg-white border border-[#D9D4CB] hover:border-[#B99A63] transition-colors flex flex-col justify-between overflow-hidden group shadow-xs"
             >
               <div>
                 {/* Project Image Preview */}
-                <div className="relative w-full h-48 bg-[#111111] overflow-hidden">
+                <div className="relative w-full h-48 bg-[#FAF8F5] overflow-hidden border-b border-[#D9D4CB]">
                   {proj.image ? (
                     <img
                       src={proj.image}
@@ -324,12 +327,12 @@ export default function SelectedWorkManagementPage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[#A3A3A3]">
+                    <div className="w-full h-full flex items-center justify-center text-[#66635E]">
                       <ImageIcon className="w-8 h-8 opacity-30" />
                     </div>
                   )}
                   <div className="absolute top-2.5 left-2.5">
-                    <span className="bg-[#111111]/90 backdrop-blur-sm text-[#D4BD8E] border border-[#B99A63]/30 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider">
+                    <span className="bg-[#FAF8F5]/95 backdrop-blur-sm text-[#9A7D4A] border border-[#D9D4CB] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider shadow-xs">
                       {proj.category}
                     </span>
                   </div>
@@ -337,15 +340,15 @@ export default function SelectedWorkManagementPage() {
 
                 {/* Info */}
                 <div className="p-4 space-y-2">
-                  <h3 className="text-sm font-heading font-bold text-white uppercase line-clamp-1">
+                  <h3 className="text-sm font-heading font-bold text-[#171717] uppercase line-clamp-1">
                     {proj.title}
                   </h3>
                   {proj.subtitle && (
-                    <p className="text-[11px] text-[#A3A3A3] line-clamp-1 italic">
+                    <p className="text-[11px] text-[#66635E] line-clamp-1 italic">
                       {proj.subtitle}
                     </p>
                   )}
-                  <p className="text-xs text-[#888888] line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-[#66635E] line-clamp-2 leading-relaxed font-light">
                     {proj.description}
                   </p>
 
@@ -358,29 +361,29 @@ export default function SelectedWorkManagementPage() {
               </div>
 
               {/* Actions Footer */}
-              <div className="p-4 border-t border-[#2A2A2A] flex items-center justify-between bg-[#1B1B1B]/40">
-                <span className="text-[10px] text-[#666666] font-mono">
+              <div className="p-4 border-t border-[#D9D4CB] flex items-center justify-between bg-[#FAF8F5]">
+                <span className="text-[10px] text-[#66635E] font-mono font-medium">
                   Order: {proj.order ?? 0}
                 </span>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => openEditModal(proj)}
-                    className="p-1.5 text-[#A3A3A3] hover:text-[#B99A63] hover:bg-[#242424] transition-colors rounded"
+                    className="p-1.5 text-[#171717] hover:text-[#9A7D4A] hover:border-[#B99A63] border border-[#D9D4CB] bg-white transition-colors"
                     title="Edit Project"
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => handleDelete(proj._id)}
                     disabled={deletingId === proj._id}
-                    className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-950/40 transition-colors rounded disabled:opacity-50"
+                    className="p-1.5 text-red-600 hover:text-red-700 hover:border-red-300 border border-[#D9D4CB] bg-white transition-colors disabled:opacity-50"
                     title="Delete Project"
                   >
                     {deletingId === proj._id ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
                     ) : (
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     )}
                   </button>
                 </div>
@@ -392,23 +395,28 @@ export default function SelectedWorkManagementPage() {
 
       {/* Create / Edit Drawer/Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#171717] border border-[#2A2A2A] w-full max-w-2xl my-8 p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#2A2A2A] pb-3 sticky top-0 bg-[#171717] z-10">
-              <h2 className="text-base font-heading font-bold text-white uppercase tracking-wider">
-                {editingProject ? "Edit Selected Work" : "Add New Selected Work"}
-              </h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
+          <div className="bg-[#FAF8F5] border border-[#D9D4CB] w-full max-w-2xl my-8 p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#D9D4CB] pb-3 sticky top-0 bg-[#FAF8F5] z-10">
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[#B99A63] block leading-none mb-0.5">
+                  Selected Work
+                </span>
+                <h2 className="text-base font-heading font-bold text-[#171717]">
+                  {editingProject ? "Edit Selected Work" : "Add New Selected Work"}
+                </h2>
+              </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-[#A3A3A3] hover:text-white p-1"
+                className="text-[#66635E] hover:text-[#171717] p-1 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {formError && (
-              <div className="p-3 bg-red-950/40 border border-red-800 text-red-300 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-500" />
                 <span>{formError}</span>
               </div>
             )}
@@ -416,12 +424,12 @@ export default function SelectedWorkManagementPage() {
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               {/* Image Upload with ImageKit */}
               <div>
-                <label className="block text-[#A3A3A3] uppercase tracking-wider mb-1 font-semibold">
+                <label className="block text-[#66635E] uppercase tracking-wider mb-1 font-semibold">
                   Project Image (ImageKit)
                 </label>
 
                 {formData.image && (
-                  <div className="relative mb-3 w-full h-40 bg-[#111111] border border-[#2A2A2A] overflow-hidden rounded">
+                  <div className="relative mb-3 w-full h-40 bg-white border border-[#D9D4CB] overflow-hidden">
                     <img
                       src={formData.image}
                       alt="Uploaded preview"
@@ -430,7 +438,7 @@ export default function SelectedWorkManagementPage() {
                     <button
                       type="button"
                       onClick={() => setFormData((prev) => ({ ...prev, image: "" }))}
-                      className="absolute top-2 right-2 p-1 bg-black/70 hover:bg-black text-white rounded"
+                      className="absolute top-2 right-2 p-1 bg-black/70 hover:bg-black text-white"
                       title="Remove image"
                     >
                       <X className="w-4 h-4" />
@@ -449,7 +457,7 @@ export default function SelectedWorkManagementPage() {
                   />
                   <label
                     htmlFor="imagekit-uploader"
-                    className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#242424] hover:bg-[#2A2A2A] text-white border border-white/10 cursor-pointer text-xs font-semibold uppercase tracking-wider transition-colors ${
+                    className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white hover:bg-[#FAF8F5] text-[#171717] border border-[#D9D4CB] hover:border-[#B99A63] cursor-pointer text-xs font-semibold uppercase tracking-wider transition-colors ${
                       uploadingImage ? "opacity-50 pointer-events-none" : ""
                     }`}
                   >
@@ -471,14 +479,14 @@ export default function SelectedWorkManagementPage() {
                     value={formData.image}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                     placeholder="Or paste direct image URL (Unsplash, ImageKit, etc.)"
-                    className="flex-1 bg-[#111111] border border-[#2A2A2A] px-3 py-2 text-white placeholder-neutral-600 focus:outline-none focus:border-[#B99A63]"
+                    className="flex-1 bg-white border border-[#D9D4CB] px-3 py-2 text-[#171717] placeholder:text-[#66635E]/60 focus:outline-none focus:border-[#B99A63] focus:ring-1 focus:ring-[#B99A63]/30 transition-all"
                   />
                 </div>
 
                 {uploadError && (
-                  <p className="text-[11px] text-red-400 mt-1">{uploadError}</p>
+                  <p className="text-[11px] text-red-600 mt-1">{uploadError}</p>
                 )}
-                <span className="text-[10px] text-[#A3A3A3] mt-1 block">
+                <span className="text-[10px] text-[#66635E] mt-1 block">
                   Supported formats: JPG, PNG, WebP (under 10MB). Uploads directly to ImageKit endpoint.
                 </span>
               </div>
@@ -486,7 +494,7 @@ export default function SelectedWorkManagementPage() {
               {/* Title & Category (REQUIRED) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[#A3A3A3] uppercase tracking-wider mb-1 font-semibold">
+                  <label className="block text-[#66635E] uppercase tracking-wider mb-1 font-semibold">
                     Title <span className="text-[#B99A63]">*</span>
                   </label>
                   <input
@@ -495,12 +503,12 @@ export default function SelectedWorkManagementPage() {
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder="e.g. Modern Balcony Installation"
-                    className="w-full bg-[#111111] border border-[#2A2A2A] px-3 py-2 text-white placeholder-neutral-600 focus:outline-none focus:border-[#B99A63]"
+                    className="w-full bg-white border border-[#D9D4CB] px-3 py-2 text-[#171717] placeholder:text-[#66635E]/60 focus:outline-none focus:border-[#B99A63] focus:ring-1 focus:ring-[#B99A63]/30 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[#A3A3A3] uppercase tracking-wider mb-1 font-semibold">
+                  <label className="block text-[#66635E] uppercase tracking-wider mb-1 font-semibold">
                     Category <span className="text-[#B99A63]">*</span>
                   </label>
                   {categories.length > 0 ? (
@@ -508,7 +516,7 @@ export default function SelectedWorkManagementPage() {
                       value={formData.category}
                       onChange={handleCategorySelect}
                       required
-                      className="w-full bg-[#111111] border border-[#2A2A2A] px-3 py-2 text-white focus:outline-none focus:border-[#B99A63]"
+                      className="w-full bg-white border border-[#D9D4CB] px-3 py-2 text-[#171717] focus:outline-none focus:border-[#B99A63] focus:ring-1 focus:ring-[#B99A63]/30 transition-all cursor-pointer"
                     >
                       <option value="" disabled>Select category</option>
                       {categories.map((cat) => (
@@ -530,7 +538,7 @@ export default function SelectedWorkManagementPage() {
                         })
                       }
                       placeholder="e.g. Glass Railing"
-                      className="w-full bg-[#111111] border border-[#2A2A2A] px-3 py-2 text-white focus:outline-none focus:border-[#B99A63]"
+                      className="w-full bg-white border border-[#D9D4CB] px-3 py-2 text-[#171717] focus:outline-none focus:border-[#B99A63] focus:ring-1 focus:ring-[#B99A63]/30 transition-all"
                     />
                   )}
                 </div>
@@ -538,7 +546,7 @@ export default function SelectedWorkManagementPage() {
 
               {/* Description (REQUIRED) */}
               <div>
-                <label className="block text-[#A3A3A3] uppercase tracking-wider mb-1 font-semibold">
+                <label className="block text-[#66635E] uppercase tracking-wider mb-1 font-semibold">
                   Description <span className="text-[#B99A63]">*</span>
                 </label>
                 <textarea
@@ -547,19 +555,19 @@ export default function SelectedWorkManagementPage() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Detailed project description and architectural highlights..."
-                  className="w-full bg-[#111111] border border-[#2A2A2A] px-3 py-2 text-white placeholder-neutral-600 focus:outline-none focus:border-[#B99A63] resize-none"
+                  className="w-full bg-white border border-[#D9D4CB] px-3 py-2 text-[#171717] placeholder:text-[#66635E]/60 focus:outline-none focus:border-[#B99A63] focus:ring-1 focus:ring-[#B99A63]/30 resize-none transition-all"
                 />
               </div>
 
               {/* Optional Fields Section */}
-              <div className="pt-2 border-t border-[#2A2A2A]">
-                <span className="text-[10px] text-[#A3A3A3] font-semibold uppercase tracking-widest block mb-3">
+              <div className="pt-2 border-t border-[#D9D4CB]">
+                <span className="text-[10px] text-[#B99A63] font-semibold uppercase tracking-widest block mb-3">
                   Optional Details
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[#888888] uppercase tracking-wider mb-1">
+                    <label className="block text-[#66635E] uppercase tracking-wider mb-1 font-medium">
                       Subtitle (Optional)
                     </label>
                     <input
@@ -567,12 +575,12 @@ export default function SelectedWorkManagementPage() {
                       value={formData.subtitle}
                       onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
                       placeholder="e.g. Frameless Toughened Glass System"
-                      className="w-full bg-[#111111] border border-[#2A2A2A] px-3 py-2 text-white placeholder-neutral-600 focus:outline-none focus:border-[#B99A63]"
+                      className="w-full bg-white border border-[#D9D4CB] px-3 py-2 text-[#171717] placeholder:text-[#66635E]/60 focus:outline-none focus:border-[#B99A63] focus:ring-1 focus:ring-[#B99A63]/30 transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[#888888] uppercase tracking-wider mb-1">
+                    <label className="block text-[#66635E] uppercase tracking-wider mb-1 font-medium">
                       Location / Space Type (Optional)
                     </label>
                     <input
@@ -580,18 +588,18 @@ export default function SelectedWorkManagementPage() {
                       value={formData.locationType}
                       onChange={(e) => setFormData({ ...formData, locationType: e.target.value })}
                       placeholder="e.g. Residential Terrace"
-                      className="w-full bg-[#111111] border border-[#2A2A2A] px-3 py-2 text-white placeholder-neutral-600 focus:outline-none focus:border-[#B99A63]"
+                      className="w-full bg-white border border-[#D9D4CB] px-3 py-2 text-[#171717] placeholder:text-[#66635E]/60 focus:outline-none focus:border-[#B99A63] focus:ring-1 focus:ring-[#B99A63]/30 transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[#888888] uppercase tracking-wider mb-1">
+                    <label className="block text-[#66635E] uppercase tracking-wider mb-1 font-medium">
                       Aspect Ratio (Optional)
                     </label>
                     <select
                       value={formData.aspectRatio}
                       onChange={(e) => setFormData({ ...formData, aspectRatio: e.target.value })}
-                      className="w-full bg-[#111111] border border-[#2A2A2A] px-3 py-2 text-white focus:outline-none focus:border-[#B99A63]"
+                      className="w-full bg-white border border-[#D9D4CB] px-3 py-2 text-[#171717] focus:outline-none focus:border-[#B99A63] focus:ring-1 focus:ring-[#B99A63]/30 transition-all cursor-pointer"
                     >
                       <option value="aspect-[4/5]">Portrait (4:5)</option>
                       <option value="aspect-[3/4]">Tall (3:4)</option>
@@ -601,20 +609,20 @@ export default function SelectedWorkManagementPage() {
                   </div>
 
                   <div>
-                    <label className="block text-[#888888] uppercase tracking-wider mb-1">
+                    <label className="block text-[#66635E] uppercase tracking-wider mb-1 font-medium">
                       Display Order (Optional)
                     </label>
                     <input
                       type="number"
                       value={formData.order}
                       onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
-                      className="w-full bg-[#111111] border border-[#2A2A2A] px-3 py-2 text-white focus:outline-none focus:border-[#B99A63]"
+                      className="w-full bg-white border border-[#D9D4CB] px-3 py-2 text-[#171717] focus:outline-none focus:border-[#B99A63] focus:ring-1 focus:ring-[#B99A63]/30 transition-all"
                     />
                   </div>
                 </div>
 
                 <div className="mt-3">
-                  <label className="block text-[#888888] uppercase tracking-wider mb-1">
+                  <label className="block text-[#66635E] uppercase tracking-wider mb-1 font-medium">
                     Specifications (Optional, one per line or comma-separated)
                   </label>
                   <textarea
@@ -622,24 +630,24 @@ export default function SelectedWorkManagementPage() {
                     value={formData.specsText}
                     onChange={(e) => setFormData({ ...formData, specsText: e.target.value })}
                     placeholder="12mm Toughened Clear Glass&#10;Heavy Anodized Base Track&#10;Slim Top Rail Protection"
-                    className="w-full bg-[#111111] border border-[#2A2A2A] px-3 py-2 text-white placeholder-neutral-600 focus:outline-none focus:border-[#B99A63] resize-none font-mono text-[11px]"
+                    className="w-full bg-white border border-[#D9D4CB] px-3 py-2 text-[#171717] placeholder:text-[#66635E]/60 focus:outline-none focus:border-[#B99A63] focus:ring-1 focus:ring-[#B99A63]/30 resize-none font-mono text-[11px] transition-all"
                   />
                 </div>
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#2A2A2A]">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#D9D4CB]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 border border-[#2A2A2A] text-[#A3A3A3] hover:text-white uppercase tracking-wider text-[11px]"
+                  className="px-4 py-2 border border-[#D9D4CB] text-[#66635E] hover:text-[#171717] hover:border-[#171717] uppercase tracking-wider text-[11px] bg-white transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-2 bg-[#B99A63] hover:bg-[#A38550] text-[#171717] px-6 py-2.5 font-bold uppercase tracking-wider text-[11px] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 bg-[#171717] hover:bg-[#B99A63] text-[#FAF8F5] px-6 py-2.5 font-semibold uppercase tracking-wider text-[11px] disabled:opacity-50 transition-colors"
                 >
                   {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   {editingProject ? "Save Changes" : "Create Project"}
