@@ -101,6 +101,12 @@ export default function Footer({ onOpenCallPicker, onOpenWhatsAppPicker }: Foote
                   Let&apos;s Talk
                 </Link>
               </li>
+              <li>
+                <Link href="/review" className="text-[#D4BD8E] hover:text-white transition-colors flex items-center gap-1 font-medium">
+                  <span>Write a Review</span>
+                  <span className="text-[9px] px-1 py-0.2 bg-[#B99A63]/30 text-[#D4BD8E] rounded-xs uppercase tracking-wider font-semibold">AI</span>
+                </Link>
+              </li>
             </ul>
           </div>
 

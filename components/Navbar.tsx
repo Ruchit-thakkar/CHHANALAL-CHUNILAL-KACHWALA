@@ -35,11 +35,12 @@ export default function Navbar({
   }, []);
 
   const navLinks = [
-    { label: "Home", href: "#hero" },
-    { label: "Services", href: "#services" },
-    { label: "Our Work", href: "#work" },
-    { label: "About", href: "#about" },
-    { label: "Let's Talk", href: "#contact" },
+    { label: "Home", href: "/#hero" },
+    { label: "Services", href: "/#services" },
+    { label: "Our Work", href: "/#work" },
+    { label: "About", href: "/#about" },
+    { label: "Review", href: "/review" },
+    { label: "Let's Talk", href: "/#contact" },
   ];
 
   return (
